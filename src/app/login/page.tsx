@@ -60,9 +60,42 @@ export default function LoginPage() {
     }
   };
 
-  const handleQuickLogin = (roleEmail: string, rolePass: string) => {
+  const handleQuickLogin = async (roleEmail: string, rolePass: string) => {
     setEmail(roleEmail);
     setPassword(rolePass);
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: roleEmail, password: rolePass }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'Authentication failed');
+        setLoading(false);
+        return;
+      }
+
+      const role = data.user.role;
+      if (role === 'SUPER_ADMIN') {
+        router.push('/admin');
+      } else if (role === 'CHEF') {
+        router.push('/chef');
+      } else if (role === 'BILLING_STAFF') {
+        router.push('/pos');
+      } else {
+        router.push('/');
+      }
+      router.refresh();
+    } catch (e: any) {
+      setError(e.message || 'An unexpected error occurred');
+      setLoading(false);
+    }
   };
 
   return (
