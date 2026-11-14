@@ -1,0 +1,224 @@
+// Master Prisma Schema for Restaurant Management System
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id          String       @id @default(uuid())
+  name        String       @unique // SUPER_ADMIN, CHEF, BILLING_STAFF, CUSTOMER, etc.
+  description String?
+  users       User[]
+  permissions Permission[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Permission {
+  id        String   @id @default(uuid())
+  roleId    String
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  module    String   // DASHBOARD, ANALYTICS, MENU, MENU_MASTER, BILLING, TABLES, GALLERY, TESTIMONIALS, MESSAGES, SETTINGS, RBAC, USERS
+  canCreate Boolean  @default(false)
+  canRead   Boolean  @default(true)
+  canUpdate Boolean  @default(false)
+  canDelete Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([roleId, module])
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  phone     String?
+  roleId    String
+  role      Role     @relation(fields: [roleId], references: [id])
+  status    String   @default("ACTIVE") // ACTIVE, INACTIVE
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id           String     @id @default(uuid())
+  name         String     @unique
+  slug         String     @unique
+  description  String?
+  image        String?
+  displayOrder Int        @default(0)
+  isActive     Boolean    @default(true)
+  menuItems    MenuItem[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model MenuItem {
+  id          String      @id @default(uuid())
+  name        String
+  slug        String      @unique
+  description String?
+  price       Float
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  isVeg       Boolean     @default(true)
+  isAvailable Boolean     @default(true)
+  image       String?
+  tags        String?     // e.g. "Spicy, Chef Special, Best Seller"
+  prepTime    Int         @default(15) // in minutes
+  orderItems  OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model RestaurantTable {
+  id          String   @id @default(uuid())
+  tableNumber String   @unique // e.g. "T-01", "T-02"
+  capacity    Int      @default(4)
+  floorZone   String   @default("Main Dining") // Main Dining, Rooftop, VIP Lounge, Terrace
+  status      String   @default("AVAILABLE") // AVAILABLE, OCCUPIED, RESERVED, CLEANING
+  qrCodeToken String?
+  orders      Order[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Order {
+  id                  String               @id @default(uuid())
+  orderNumber         String               @unique // e.g. "ORD-1001"
+  tableId             String?
+  table               RestaurantTable?     @relation(fields: [tableId], references: [id])
+  customerName        String?
+  customerPhone       String?
+  orderType           String               @default("DINE_IN") // DINE_IN, TAKEAWAY, ONLINE
+  status              String               @default("PENDING") // PENDING, ACCEPTED, PREPARING, READY, COMPLETED, CANCELLED
+  specialInstructions String?
+  subtotal            Float                @default(0)
+  taxAmount           Float                @default(0)
+  discountAmount      Float                @default(0)
+  totalAmount         Float                @default(0)
+  items               OrderItem[]
+  bill                Bill?
+  statusHistory       OrderStatusHistory[]
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+}
+
+model OrderItem {
+  id                  String   @id @default(uuid())
+  orderId             String
+  order               Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItemId          String
+  menuItem            MenuItem @relation(fields: [menuItemId], references: [id])
+  quantity            Int      @default(1)
+  unitPrice           Float
+  totalPrice          Float
+  specialInstructions String?
+  status              String   @default("PENDING") // PENDING, PREPARING, READY
+  createdAt           DateTime @default(now())
+}
+
+model OrderStatusHistory {
+  id        String   @id @default(uuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status    String
+  notes     String?
+  changedBy String?
+  createdAt DateTime @default(now())
+}
+
+model Bill {
+  id             String    @id @default(uuid())
+  invoiceNumber  String    @unique // e.g. "INV-2026-001"
+  orderId        String    @unique
+  order          Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  tableId        String?
+  subtotal       Float
+  taxRate        Float     @default(5.0) // percentage e.g. 5%
+  taxAmount      Float     @default(0)
+  discountType   String?   // PERCENT, FIXED
+  discountValue  Float     @default(0)
+  discountAmount Float     @default(0)
+  grandTotal     Float
+  paymentStatus  String    @default("PENDING") // PENDING, PAID, CANCELLED
+  payments       Payment[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Payment {
+  id             String   @id @default(uuid())
+  billId         String
+  bill           Bill     @relation(fields: [billId], references: [id], onDelete: Cascade)
+  amount         Float
+  paymentMethod  String   // CASH, UPI, CARD, SPLIT
+  transactionRef String?
+  status         String   @default("COMPLETED") // COMPLETED, FAILED, REFUNDED
+  paidAt         DateTime @default(now())
+}
+
+model Gallery {
+  id          String   @id @default(uuid())
+  title       String
+  category    String   // Food, Interior, Ambience, Events, Chef
+  imageUrl    String
+  description String?
+  isFeatured  Boolean  @default(false)
+  displayOrder Int     @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Testimonial {
+  id           String   @id @default(uuid())
+  customerName String
+  customerRole String?  // e.g. "Food Blogger", "Regular Guest"
+  avatarUrl    String?
+  rating       Int      @default(5)
+  content      String
+  isApproved   Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  message   String
+  status    String   @default("UNREAD") // UNREAD, READ, REPLIED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Setting {
+  id             String   @id @default("default")
+  restaurantName String   @default("Royal Spice Grand Restaurant & Bar")
+  tagLine        String   @default("Authentic Flavours, Luxury Dining")
+  logo           String?
+  address        String   @default("42 Gourmet Avenue, Culinary District, Metro City")
+  phone          String   @default("+91 98765 43210")
+  email          String   @default("contact@royalspice.com")
+  openingHours   String   @default("Mon - Sun: 11:00 AM - 11:30 PM")
+  currency       String   @default("INR")
+  currencySymbol String   @default("₹")
+  taxRate        Float    @default(5.0)
+  taxNumber      String   @default("GSTIN33AABCT9988D1Z9")
+  websiteUrl     String   @default("https://royalspice.com")
+  facebookUrl    String?  @default("https://facebook.com/royalspice")
+  instagramUrl   String?  @default("https://instagram.com/royalspice")
+  twitterUrl     String?  @default("https://twitter.com/royalspice")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
