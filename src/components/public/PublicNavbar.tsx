@@ -48,31 +48,14 @@ export default function PublicNavbar({ settings }: { settings?: any }) {
             </span>
           </div>
 
-          {/* Quick System Portal Access Pills */}
+          {/* Right: Discrete Staff Login */}
           <div className="flex items-center gap-2">
-            <span className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider hidden sm:inline">
-              Module Portals:
-            </span>
             <Link
-              href="/admin"
-              className="px-2.5 py-1 rounded-lg bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/30 font-bold text-[11px] flex items-center gap-1.5 transition-all shadow-xs"
+              href="/login"
+              className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-semibold text-[11px] flex items-center gap-1.5 transition-all"
             >
-              <ShieldCheck className="w-3 h-3" />
-              <span>Super Admin</span>
-            </Link>
-            <Link
-              href="/chef"
-              className="px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold text-[11px] flex items-center gap-1.5 transition-all shadow-xs"
-            >
-              <ChefHat className="w-3 h-3" />
-              <span>Chef Panel</span>
-            </Link>
-            <Link
-              href="/pos"
-              className="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold text-[11px] flex items-center gap-1.5 transition-all shadow-xs"
-            >
-              <Receipt className="w-3 h-3" />
-              <span>POS Billing</span>
+              <ShieldCheck className="w-3.5 h-3.5 text-orange-400" />
+              <span>Staff / Admin Login</span>
             </Link>
           </div>
         </div>

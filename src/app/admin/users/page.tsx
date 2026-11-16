@@ -162,6 +162,7 @@ export default function UserCreationPage() {
     SUPER_ADMIN: 'bg-purple-100 text-purple-800 border-purple-200',
     CHEF: 'bg-amber-100 text-amber-800 border-amber-200',
     BILLING_STAFF: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    WAITER: 'bg-indigo-100 text-indigo-800 border-indigo-200',
     CUSTOMER: 'bg-blue-100 text-blue-800 border-blue-200',
   };
 

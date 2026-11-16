@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   ChefHat,
   Clock,
@@ -11,28 +12,54 @@ import {
   Flame,
   Bell,
   UtensilsCrossed,
-  Layers,
-  ArrowRight,
-  ShieldCheck,
-  Receipt,
-  Store,
-  ChevronRight,
-  Eye,
+  LogOut,
+  X,
 } from 'lucide-react';
+import AdminRoleSwitcher from '@/components/common/AdminRoleSwitcher';
 import { formatCurrency, formatDate } from '@/lib/utils';
 
 export default function ChefPanelPage() {
+  const router = useRouter();
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
 
+  // 1. Role verification
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then((res) => {
+        if (!res.ok) throw new Error('Unauthenticated');
+        return res.json();
+      })
+      .then((data) => {
+        const user = data.user;
+        setCurrentUser(user);
+        // Only SUPER_ADMIN and CHEF can access Chef View
+        if (user.role !== 'SUPER_ADMIN' && user.role !== 'CHEF') {
+          if (user.role === 'BILLING_STAFF') router.push('/billing');
+          else if (user.role === 'WAITER' || user.role === 'CUSTOMER') router.push('/waiter');
+          else router.push('/login');
+        }
+      })
+      .catch(() => {
+        router.push('/login');
+      })
+      .finally(() => {
+        setAuthLoading(false);
+      });
+  }, [router]);
+
+  // 2. Poll orders every 3s so waiter updates reflect immediately
   useEffect(() => {
     fetchOrders();
     const interval = setInterval(() => {
       fetchOrders(false);
-    }, 5000); // 5s kitchen live poll
+    }, 3000);
     return () => clearInterval(interval);
   }, [statusFilter]);
 
@@ -60,7 +87,7 @@ export default function ChefPanelPage() {
         body: JSON.stringify({
           orderId,
           status: newStatus,
-          changedBy: 'Head Chef Marco',
+          changedBy: currentUser?.name || 'Head Chef',
           notes: `Kitchen updated status to ${newStatus}`,
         }),
       });
@@ -75,15 +102,38 @@ export default function ChefPanelPage() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      router.push('/login');
+      router.refresh();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">
+        <div className="flex items-center gap-3">
+          <RefreshCw className="w-6 h-6 animate-spin text-amber-500" />
+          <span className="font-bold text-sm">Authenticating Kitchen Display System...</span>
+        </div>
+      </div>
+    );
+  }
+
   // Status counts
   const pendingCount = orders.filter((o) => o.status === 'PENDING').length;
   const acceptedCount = orders.filter((o) => o.status === 'ACCEPTED').length;
   const preparingCount = orders.filter((o) => o.status === 'PREPARING').length;
   const readyCount = orders.filter((o) => o.status === 'READY').length;
-  const completedCount = orders.filter((o) => o.status === 'COMPLETED').length;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-orange-500 selection:text-white font-sans">
+      {/* Super Admin Top Switcher (Visible to Admin Only) */}
+      <AdminRoleSwitcher />
+
       {/* Top Header */}
       <header className="h-16 bg-slate-900 border-b border-slate-800 px-6 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-3">
@@ -96,66 +146,54 @@ export default function ChefPanelPage() {
                 Kitchen Display System (KDS)
               </span>
               <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                Chef Marco Pierre
+                {currentUser?.name || 'Head Chef'}
               </span>
             </div>
             <p className="text-[11px] text-slate-400">
-              Auto-sync active &bull; Last refreshed {lastRefreshed.toLocaleTimeString()}
+              Live orders from floor staff &bull; Auto-sync every 3s (Last: {lastRefreshed.toLocaleTimeString()})
             </p>
           </div>
         </div>
 
-        {/* Portal Links & Refresh */}
+        {/* Refresh & Logout */}
         <div className="flex items-center gap-3">
           <button
             onClick={() => fetchOrders()}
             className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors flex items-center gap-1.5 text-xs font-bold"
             title="Refresh Orders"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-amber-400' : ''}`} />
             <span className="hidden sm:inline">Refresh</span>
           </button>
 
-          <div className="hidden md:flex items-center gap-2 border-l border-slate-800 pl-3">
-            <Link
-              href="/admin"
-              className="px-2.5 py-1 rounded-lg bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/30 font-bold text-xs flex items-center gap-1"
+          {/* If Chef (not Admin), show Logout */}
+          {currentUser?.role !== 'SUPER_ADMIN' && (
+            <button
+              onClick={handleLogout}
+              className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold flex items-center gap-1 transition-colors"
+              title="Sign out"
             >
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Admin</span>
-            </Link>
-            <Link
-              href="/pos"
-              className="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold text-xs flex items-center gap-1"
-            >
-              <Receipt className="w-3.5 h-3.5" />
-              <span>POS Billing</span>
-            </Link>
-            <Link
-              href="/"
-              className="px-2.5 py-1 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold text-xs flex items-center gap-1"
-            >
-              <Store className="w-3.5 h-3.5" />
-              <span>Website</span>
-            </Link>
-          </div>
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Logout</span>
+            </button>
+          )}
         </div>
       </header>
 
       {/* Main Body */}
       <main className="max-w-7xl mx-auto px-4 sm:px-8 py-6 flex-1 w-full space-y-6">
         {/* Status Pipeline Counter Strip */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <button
             onClick={() => setStatusFilter('PENDING')}
             className={`p-3.5 rounded-2xl border transition-all text-left flex items-center justify-between ${
               statusFilter === 'PENDING'
-                ? 'bg-amber-500/20 border-amber-500 text-amber-300'
+                ? 'bg-amber-500/20 border-amber-500 text-amber-300 ring-2 ring-amber-500/20'
                 : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
             }`}
           >
             <div>
-              <span className="text-[10px] uppercase font-bold tracking-wider block">1. New / Pending</span>
+              <span className="text-[10px] uppercase font-bold tracking-wider block">1. New Tickets</span>
               <span className="text-xl font-black text-white">{pendingCount}</span>
             </div>
             <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold">
@@ -164,32 +202,15 @@ export default function ChefPanelPage() {
           </button>
 
           <button
-            onClick={() => setStatusFilter('ACCEPTED')}
-            className={`p-3.5 rounded-2xl border transition-all text-left flex items-center justify-between ${
-              statusFilter === 'ACCEPTED'
-                ? 'bg-blue-500/20 border-blue-500 text-blue-300'
-                : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
-            }`}
-          >
-            <div>
-              <span className="text-[10px] uppercase font-bold tracking-wider block">2. Accepted</span>
-              <span className="text-xl font-black text-white">{acceptedCount}</span>
-            </div>
-            <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold">
-              👨‍🍳
-            </div>
-          </button>
-
-          <button
             onClick={() => setStatusFilter('PREPARING')}
             className={`p-3.5 rounded-2xl border transition-all text-left flex items-center justify-between ${
               statusFilter === 'PREPARING'
-                ? 'bg-orange-500/20 border-orange-500 text-orange-300'
+                ? 'bg-orange-500/20 border-orange-500 text-orange-300 ring-2 ring-orange-500/20'
                 : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
             }`}
           >
             <div>
-              <span className="text-[10px] uppercase font-bold tracking-wider block">3. Cooking</span>
+              <span className="text-[10px] uppercase font-bold tracking-wider block">2. In Cooking</span>
               <span className="text-xl font-black text-white">{preparingCount}</span>
             </div>
             <div className="w-8 h-8 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center font-bold">
@@ -201,16 +222,16 @@ export default function ChefPanelPage() {
             onClick={() => setStatusFilter('READY')}
             className={`p-3.5 rounded-2xl border transition-all text-left flex items-center justify-between ${
               statusFilter === 'READY'
-                ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300'
+                ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300 ring-2 ring-emerald-500/20'
                 : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
             }`}
           >
             <div>
-              <span className="text-[10px] uppercase font-bold tracking-wider block">4. Ready to Serve</span>
+              <span className="text-[10px] uppercase font-bold tracking-wider block">3. Food Ready</span>
               <span className="text-xl font-black text-white">{readyCount}</span>
             </div>
             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">
-              🛎️
+              🔔
             </div>
           </button>
 
@@ -218,12 +239,12 @@ export default function ChefPanelPage() {
             onClick={() => setStatusFilter('ALL')}
             className={`p-3.5 rounded-2xl border transition-all text-left flex items-center justify-between ${
               statusFilter === 'ALL'
-                ? 'bg-purple-500/20 border-purple-500 text-purple-300'
+                ? 'bg-purple-500/20 border-purple-500 text-purple-300 ring-2 ring-purple-500/20'
                 : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
             }`}
           >
             <div>
-              <span className="text-[10px] uppercase font-bold tracking-wider block">All Tickets</span>
+              <span className="text-[10px] uppercase font-bold tracking-wider block">All Live Tickets</span>
               <span className="text-xl font-black text-white">{orders.length}</span>
             </div>
             <div className="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center font-bold">
@@ -243,16 +264,8 @@ export default function ChefPanelPage() {
               <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
               <h3 className="font-bold text-base text-white">All Kitchen Tickets Cleared!</h3>
               <p className="text-xs text-slate-400 max-w-sm mx-auto">
-                No orders are currently awaiting preparation under filter "{statusFilter}". New orders from the customer website or POS billing counter will chime in automatically.
+                No orders are currently awaiting cooking under filter "{statusFilter}". New table orders dispatched from the Floor Waiter view will appear here automatically.
               </p>
-              <div className="pt-2">
-                <Link
-                  href="/menu"
-                  className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs font-bold inline-block"
-                >
-                  Place Test Order On Website
-                </Link>
-              </div>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -264,19 +277,19 @@ export default function ChefPanelPage() {
                 const isCompleted = order.status === 'COMPLETED';
 
                 const statusColor = isPending
-                  ? 'border-amber-500/60 bg-amber-500/5'
+                  ? 'border-amber-500/80 bg-amber-500/10 ring-2 ring-amber-500/20'
                   : isAccepted
                   ? 'border-blue-500/60 bg-blue-500/5'
                   : isPreparing
-                  ? 'border-orange-500/60 bg-orange-500/5'
+                  ? 'border-orange-500/80 bg-orange-500/10'
                   : isReady
-                  ? 'border-emerald-500/60 bg-emerald-500/5'
+                  ? 'border-emerald-500/80 bg-emerald-500/10'
                   : 'border-slate-800 bg-slate-900/60 opacity-60';
 
                 return (
                   <div
                     key={order.id}
-                    className={`rounded-3xl border-2 p-5 flex flex-col justify-between transition-all duration-300 shadow-lg ${statusColor}`}
+                    className={`rounded-3xl border-2 p-5 flex flex-col justify-between transition-all duration-300 shadow-xl ${statusColor}`}
                   >
                     {/* Ticket Header */}
                     <div className="space-y-3 pb-3 border-b border-slate-800">
@@ -292,31 +305,33 @@ export default function ChefPanelPage() {
                         <span
                           className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-full ${
                             isPending
-                              ? 'bg-amber-500 text-slate-950 animate-pulse'
-                              : isAccepted
-                              ? 'bg-blue-600 text-white'
+                              ? 'bg-amber-400 text-slate-950 font-black animate-pulse'
                               : isPreparing
-                              ? 'bg-orange-600 text-white'
+                              ? 'bg-orange-500 text-white'
                               : isReady
-                              ? 'bg-emerald-500 text-slate-950 font-extrabold'
+                              ? 'bg-emerald-400 text-slate-950 font-black'
                               : 'bg-slate-700 text-slate-300'
                           }`}
                         >
-                          {order.status}
+                          {order.status === 'PENDING' && '⚡ New Ticket'}
+                          {order.status === 'PREPARING' && '🔥 Cooking Now'}
+                          {order.status === 'READY' && '🔔 Ready To Serve'}
+                          {order.status === 'ACCEPTED' && 'Accepted'}
+                          {order.status === 'COMPLETED' && 'Delivered'}
                         </span>
                       </div>
 
                       <div className="flex items-center justify-between text-xs">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-lg bg-slate-800 text-white font-black flex items-center justify-center text-xs">
+                          <div className="w-10 h-10 rounded-xl bg-slate-800 text-amber-400 font-black flex items-center justify-center text-sm border border-slate-700">
                             {order.table?.tableNumber || 'Takeaway'}
                           </div>
                           <div>
-                            <p className="font-bold text-white text-xs">
+                            <p className="font-bold text-white text-sm">
                               {order.table ? `Table ${order.table.tableNumber}` : 'Takeaway Order'}
                             </p>
                             <p className="text-[10px] text-slate-400">
-                              {order.customerName || 'Walk-in Diner'}
+                              {order.table?.floorZone || 'Main Hall'} &bull; {order.customerName || 'Diner'}
                             </p>
                           </div>
                         </div>
@@ -333,7 +348,7 @@ export default function ChefPanelPage() {
                       {order.specialInstructions && (
                         <div className="p-2.5 rounded-xl bg-orange-950/40 border border-orange-500/30 text-orange-300 text-xs font-semibold">
                           <span className="block text-[10px] uppercase font-bold text-orange-400">
-                            Kitchen Note:
+                            Order Instructions:
                           </span>
                           {order.specialInstructions}
                         </div>
@@ -345,20 +360,22 @@ export default function ChefPanelPage() {
                       {order.items?.map((item: any) => (
                         <div
                           key={item.id}
-                          className="flex items-center justify-between p-2 rounded-xl bg-slate-900 border border-slate-800/80 text-xs"
+                          className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs"
                         >
                           <div className="flex items-center gap-2.5">
-                            <span className="w-6 h-6 rounded-lg bg-slate-800 text-amber-400 font-black text-xs flex items-center justify-center border border-slate-700">
-                              {item.quantity}x
+                            <span className="w-7 h-7 rounded-lg bg-slate-800 text-amber-400 font-black text-xs flex items-center justify-center border border-slate-700">
+                              {item.quantity}&times;
                             </span>
                             <div>
                               <p className="font-bold text-white flex items-center gap-1.5">
                                 <span>{item.menuItem?.name}</span>
-                                <span className="text-[10px]">{item.menuItem?.isVeg ? '🟢' : '🔴'}</span>
+                                <span className="text-[10px]">
+                                  {item.menuItem?.isVeg ? '🟢 Veg' : '🔴 Non-Veg'}
+                                </span>
                               </p>
                               {item.specialInstructions && (
                                 <p className="text-[10px] text-amber-300 italic">
-                                  &ldquo;{item.specialInstructions}&rdquo;
+                                  Note: &ldquo;{item.specialInstructions}&rdquo;
                                 </p>
                               )}
                             </div>
@@ -371,23 +388,12 @@ export default function ChefPanelPage() {
                     <div className="pt-3 border-t border-slate-800 space-y-2">
                       {isPending && (
                         <button
-                          onClick={() => handleUpdateStatus(order.id, 'ACCEPTED')}
-                          disabled={updatingId === order.id}
-                          className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-amber-500/20"
-                        >
-                          <CheckCircle2 className="w-4 h-4" />
-                          <span>Accept Kitchen Order</span>
-                        </button>
-                      )}
-
-                      {isAccepted && (
-                        <button
                           onClick={() => handleUpdateStatus(order.id, 'PREPARING')}
                           disabled={updatingId === order.id}
-                          className="w-full py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-black text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-orange-500/20"
+                          className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 transition-all shadow-lg shadow-orange-500/25"
                         >
                           <Flame className="w-4 h-4" />
-                          <span>Start Cooking / Preparing</span>
+                          <span>🔥 Start Cooking Food Now</span>
                         </button>
                       )}
 
@@ -395,27 +401,27 @@ export default function ChefPanelPage() {
                         <button
                           onClick={() => handleUpdateStatus(order.id, 'READY')}
                           disabled={updatingId === order.id}
-                          className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-emerald-500/20"
+                          className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs flex items-center justify-center gap-1.5 transition-all shadow-lg shadow-emerald-500/25"
                         >
                           <Bell className="w-4 h-4" />
-                          <span>Mark Food Ready (Chime Staff)</span>
+                          <span>✅ Mark Food Ready (Notify Waiter)</span>
                         </button>
                       )}
 
                       {isReady && (
                         <button
-                          onClick={() => handleUpdateStatus(order.id, 'COMPLETED')}
+                          onClick={() => handleUpdateStatus(order.id, 'ACCEPTED')}
                           disabled={updatingId === order.id}
-                          className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 transition-all"
+                          className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 transition-all"
                         >
                           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                          <span>Dispatched to Table &bull; Complete</span>
+                          <span>🍽️ Delivered / Served to Table</span>
                         </button>
                       )}
 
                       {isCompleted && (
-                        <div className="text-center py-1 text-slate-500 text-[11px] font-bold">
-                          ✓ Ticket Delivered & Settled
+                        <div className="text-center py-2 text-slate-500 text-[11px] font-bold">
+                          ✓ Ticket Delivered & Settled at Billing
                         </div>
                       )}
                     </div>

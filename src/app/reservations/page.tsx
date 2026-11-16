@@ -36,9 +36,30 @@ export default function ReservationsPage() {
       .catch(console.error);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [reservationResult, setReservationResult] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+    try {
+      const res = await fetch('/api/reservations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          guests: parseInt(formData.guests) || 2,
+        }),
+      });
+      const data = await res.json();
+      setReservationResult(data);
+      setSubmitted(true);
+    } catch (e) {
+      console.error(e);
+      setSubmitted(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

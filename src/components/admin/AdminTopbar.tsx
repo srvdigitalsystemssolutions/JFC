@@ -435,15 +435,23 @@ export default function AdminTopbar() {
             title="Open Chef Kitchen Display"
           >
             <ChefHat className="w-3.5 h-3.5 text-amber-500" />
-            <span>Chef Panel</span>
+            <span>Chef View</span>
           </Link>
           <Link
-            href="/pos"
+            href="/billing"
             className="px-2.5 py-1 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-white rounded-md transition-all flex items-center gap-1.5"
-            title="Open POS Billing Counter"
+            title="Open Billing & POS Counter"
           >
             <Receipt className="w-3.5 h-3.5 text-emerald-500" />
-            <span>POS Billing</span>
+            <span>Billing View</span>
+          </Link>
+          <Link
+            href="/waiter"
+            className="px-2.5 py-1 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-white rounded-md transition-all flex items-center gap-1.5"
+            title="Open Floor Staff / Waiter View"
+          >
+            <Users className="w-3.5 h-3.5 text-blue-500" />
+            <span>User View</span>
           </Link>
           <Link
             href="/"
@@ -451,8 +459,8 @@ export default function AdminTopbar() {
             className="px-2.5 py-1 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-white rounded-md transition-all flex items-center gap-1.5"
             title="Open Customer Website"
           >
-            <Store className="w-3.5 h-3.5 text-blue-500" />
-            <span>Website</span>
+            <Store className="w-3.5 h-3.5 text-orange-500" />
+            <span>Customer View</span>
           </Link>
         </div>
 

@@ -49,7 +49,9 @@ export default function LoginPage() {
       } else if (role === 'CHEF') {
         router.push('/chef');
       } else if (role === 'BILLING_STAFF') {
-        router.push('/pos');
+        router.push('/billing');
+      } else if (role === 'WAITER' || role === 'CUSTOMER') {
+        router.push('/waiter');
       } else {
         router.push('/');
       }
@@ -87,7 +89,9 @@ export default function LoginPage() {
       } else if (role === 'CHEF') {
         router.push('/chef');
       } else if (role === 'BILLING_STAFF') {
-        router.push('/pos');
+        router.push('/billing');
+      } else if (role === 'WAITER' || role === 'CUSTOMER') {
+        router.push('/waiter');
       } else {
         router.push('/');
       }
@@ -224,13 +228,13 @@ export default function LoginPage() {
 
             <button
               type="button"
-              onClick={() => handleQuickLogin('john@example.com', 'user123')}
+              onClick={() => handleQuickLogin('staff@royalspice.com', 'staff123')}
               className="p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/60 transition-colors flex items-center gap-2 text-left"
             >
               <User className="w-3.5 h-3.5 text-blue-400 shrink-0" />
               <div className="truncate">
-                <p className="font-bold text-white leading-tight">Customer</p>
-                <span className="text-[10px] text-slate-400">user123</span>
+                <p className="font-bold text-white leading-tight">Floor Waiter</p>
+                <span className="text-[10px] text-slate-400">staff123</span>
               </div>
             </button>
           </div>

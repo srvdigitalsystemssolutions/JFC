@@ -31,7 +31,7 @@ export async function GET(request: Request) {
       orderBy: { createdAt: 'desc' },
     });
 
-    return NextResponse.json({ items });
+    return NextResponse.json({ items, menuItems: items });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
