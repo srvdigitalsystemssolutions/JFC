@@ -75,10 +75,10 @@ export default function HomeReservationWidget() {
           </div>
 
           <div className="space-y-2">
-            <span className="text-[11px] uppercase font-extrabold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+            <span className="text-[11px] uppercase font-bold tracking-widest text-emerald-800 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-300 font-ubuntu">
               Table Reservation Confirmed
             </span>
-            <h3 className="text-2xl sm:text-3xl font-black text-slate-900">
+            <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 font-ubuntu">
               We Look Forward To Welcoming You!
             </h3>
             <p className="text-xs text-slate-500 max-w-md mx-auto">
@@ -116,29 +116,29 @@ export default function HomeReservationWidget() {
           <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/menu"
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs font-bold shadow-md shadow-orange-500/20"
+              className="px-6 py-3 rounded-full bg-[#f2be54] hover:bg-[#ccad52] text-black text-xs font-bold uppercase tracking-widest transition-all font-ubuntu shadow-md shadow-[#f2be54]/25"
             >
               Browse Complete Menu
             </Link>
             <button
               onClick={() => setConfirmedReservation(null)}
-              className="px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-colors"
+              className="px-6 py-3 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold uppercase tracking-wider transition-colors font-ubuntu"
             >
               Book Another Table
             </button>
           </div>
         </div>
       ) : (
-        <div className="bg-white p-6 sm:p-10 rounded-3xl border border-slate-200 shadow-xl space-y-6 max-w-4xl mx-auto">
+        <div className="bg-white p-6 sm:p-10 rounded-2xl border border-slate-200 shadow-xl space-y-6 max-w-4xl mx-auto">
           <div className="text-center sm:text-left space-y-2 border-b border-slate-100 pb-4">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 text-orange-600 border border-orange-200 text-xs font-bold">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-[#f2be54]/50 text-xs font-bold uppercase tracking-wider font-ubuntu">
+              <Sparkles className="w-3.5 h-3.5 text-[#f2be54]" />
               <span>Instant Confirmation &bull; No Wait Times</span>
             </div>
-            <h3 className="text-2xl sm:text-3xl font-black text-slate-900">
+            <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 font-ubuntu uppercase tracking-wide">
               Online Dining Table Reservation
             </h3>
-            <p className="text-xs sm:text-sm text-slate-500 max-w-2xl">
+            <p className="text-xs sm:text-sm text-slate-600 max-w-2xl font-droid italic">
               Traveling from outside the area or planning a family banquet? Reserve your preferred table in advance and our stewards will have your seating ready upon arrival.
             </p>
           </div>
@@ -290,18 +290,18 @@ export default function HomeReservationWidget() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black text-sm shadow-xl shadow-orange-500/25 transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+              className="w-full py-4 rounded-full bg-[#f2be54] hover:bg-[#ccad52] text-black font-extrabold text-sm uppercase tracking-widest font-ubuntu shadow-xl shadow-[#f2be54]/25 transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin text-black" />
                   <span>Reserving Table...</span>
                 </>
               ) : (
                 <>
-                  <Calendar className="w-4 h-4" />
+                  <Calendar className="w-4 h-4 text-black" />
                   <span>Confirm Table Reservation</span>
-                  <ArrowRight className="w-4 h-4 ml-1" />
+                  <ArrowRight className="w-4 h-4 ml-1 text-black" />
                 </>
               )}
             </button>

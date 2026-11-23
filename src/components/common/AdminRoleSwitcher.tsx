@@ -52,6 +52,25 @@ export default function AdminRoleSwitcher() {
     return null;
   }
 
+  // Do NOT display on the public customer website (/, /menu, /reservations, /about, /gallery, /reviews, /contact).
+  // The customer website must remain completely clean and public-facing.
+  // Admin only views the controller when explicitly accessing /admin, /chef, /billing, or /waiter in the URL.
+  const isPublicRoute =
+    pathname === '/' ||
+    pathname.startsWith('/menu') ||
+    pathname.startsWith('/reservations') ||
+    pathname.startsWith('/about') ||
+    pathname.startsWith('/gallery') ||
+    pathname.startsWith('/reviews') ||
+    pathname.startsWith('/contact') ||
+    pathname.startsWith('/terms') ||
+    pathname.startsWith('/privacy') ||
+    pathname.startsWith('/thank-you');
+
+  if (isPublicRoute) {
+    return null;
+  }
+
   const views = [
     {
       name: 'Admin View',

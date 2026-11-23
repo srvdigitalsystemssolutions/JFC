@@ -21,6 +21,7 @@ import {
   ArrowRight,
   Flame,
   Check,
+  LogOut,
 } from 'lucide-react';
 import AdminRoleSwitcher from '@/components/common/AdminRoleSwitcher';
 import { formatCurrency } from '@/lib/utils';
@@ -49,6 +50,16 @@ export default function WaiterFloorStationPage() {
   const [customerName, setCustomerName] = useState('Table Guest');
   const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
   const [orderSentSuccess, setOrderSentSuccess] = useState<string | null>(null);
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      router.push('/login');
+      router.refresh();
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   // 1. Role verification
   useEffect(() => {
@@ -334,6 +345,15 @@ export default function WaiterFloorStationPage() {
               title="Refresh Data"
             >
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-blue-600' : ''}`} />
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 shadow-xs"
+              title="Sign out of Floor Waiter station"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Logout</span>
             </button>
           </div>
         </div>

@@ -105,45 +105,42 @@ export default function PublicFooter({ settings }: { settings?: any }) {
             </ul>
           </div>
 
-          {/* Col 3: Restaurant Management Suite */}
+          {/* Col 3: Dining Experiences & Policies */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold text-white uppercase tracking-wider text-orange-400">
-              System Portals
+            <h3 className="text-xs font-bold text-white uppercase tracking-wider text-[#f2be54] font-ubuntu">
+              Dining & Services
             </h3>
             <ul className="space-y-2 text-xs">
               <li>
                 <Link
-                  href="/admin"
-                  className="hover:text-orange-400 transition-colors flex items-center gap-1.5"
+                  href="/reservations"
+                  className="hover:text-white transition-colors"
                 >
-                  <ShieldCheck className="w-3.5 h-3.5 text-orange-500" />
-                  <span>Super Admin Control</span>
+                  Table Reservations
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/chef"
-                  className="hover:text-amber-400 transition-colors flex items-center gap-1.5"
+                  href="/menu"
+                  className="hover:text-white transition-colors"
                 >
-                  <ChefHat className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Chef Kitchen Display (KDS)</span>
+                  Chef's Specialities
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/pos"
-                  className="hover:text-emerald-400 transition-colors flex items-center gap-1.5"
+                  href="/contact"
+                  className="hover:text-white transition-colors"
                 >
-                  <Receipt className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>POS Billing Counter</span>
+                  Private Dining & Banquets
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/login"
-                  className="hover:text-slate-100 transition-colors"
+                  href="/contact"
+                  className="hover:text-white transition-colors"
                 >
-                  Staff Account Sign In
+                  Outdoor Catering Inquiries
                 </Link>
               </li>
               <li>

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { comparePassword, signToken } from '@/lib/auth';
+import { storeOtp } from '@/lib/otpStore';
 
 export async function POST(request: Request) {
   try {
@@ -40,6 +41,24 @@ export async function POST(request: Request) {
       );
     }
 
+    // Two-step verification requirement:
+    // Only SUPER_ADMIN requires 2-step email verification.
+    // Chef, Billing Staff, and Waiter / Floor Staff log in directly with employee email and password.
+    if (user.role.name === 'SUPER_ADMIN') {
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      storeOtp(user.email, otp, 300);
+
+      console.log(`[ADMIN 2FA EMAIL DISPATCH] 6-digit verification code for ${user.email}: ${otp}`);
+
+      return NextResponse.json({
+        requires2FA: true,
+        email: user.email,
+        previewOtp: otp,
+        message: `A two-step verification code has been dispatched to ${user.email}.`,
+      });
+    }
+
+    // Direct login for Chef, Billing, and Waiter / Staff
     const token = signToken({
       userId: user.id,
       email: user.email,
@@ -49,6 +68,7 @@ export async function POST(request: Request) {
 
     const response = NextResponse.json({
       success: true,
+      requires2FA: false,
       user: {
         id: user.id,
         name: user.name,

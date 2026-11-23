@@ -48,15 +48,11 @@ export default function PublicNavbar({ settings }: { settings?: any }) {
             </span>
           </div>
 
-          {/* Right: Discrete Staff Login */}
-          <div className="flex items-center gap-2">
-            <Link
-              href="/login"
-              className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-semibold text-[11px] flex items-center gap-1.5 transition-all"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-orange-400" />
-              <span>Staff / Admin Login</span>
-            </Link>
+          {/* Right: Guest Rating & Slogan */}
+          <div className="flex items-center gap-3 text-slate-400 text-[11px]">
+            <span className="text-amber-400 font-bold">★ 4.9 Rated Diner Choice</span>
+            <span className="hidden sm:inline text-slate-500">&bull;</span>
+            <span className="hidden sm:inline text-amber-300 font-medium">Authentic Heritage Dum Briyani</span>
           </div>
         </div>
       </div>
@@ -82,7 +78,7 @@ export default function PublicNavbar({ settings }: { settings?: any }) {
             </div>
           </Link>
 
-          {/* Desktop Nav Links */}
+          {/* Desktop Nav Links - Styled in Ubuntu Uppercase like Yaa Mohaideen */}
           <nav className="hidden lg:flex items-center gap-7">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
@@ -90,13 +86,13 @@ export default function PublicNavbar({ settings }: { settings?: any }) {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-xs font-bold transition-all hover:text-orange-600 relative py-2 ${
-                    isActive ? 'text-orange-600 font-extrabold' : 'text-slate-600'
+                  className={`font-ubuntu text-xs uppercase tracking-wider font-bold transition-all hover:text-amber-600 relative py-2 ${
+                    isActive ? 'text-amber-600 font-black' : 'text-slate-700'
                   }`}
                 >
                   {link.label}
                   {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500 rounded-full" />
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-500 rounded-full" />
                   )}
                 </Link>
               );
@@ -141,41 +137,6 @@ export default function PublicNavbar({ settings }: { settings?: any }) {
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
           <div className="lg:hidden bg-white border-b border-slate-200 px-6 py-5 space-y-4 animate-fade-in shadow-xl">
-            <div className="grid grid-cols-2 gap-2 pb-3 border-b border-slate-100">
-              <Link
-                href="/admin"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-xl bg-orange-50 text-orange-700 text-xs font-bold flex items-center gap-2"
-              >
-                <ShieldCheck className="w-4 h-4" />
-                <span>Super Admin</span>
-              </Link>
-              <Link
-                href="/chef"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-xl bg-amber-50 text-amber-700 text-xs font-bold flex items-center gap-2"
-              >
-                <ChefHat className="w-4 h-4" />
-                <span>Chef Panel</span>
-              </Link>
-              <Link
-                href="/pos"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-xl bg-emerald-50 text-emerald-700 text-xs font-bold flex items-center gap-2"
-              >
-                <Receipt className="w-4 h-4" />
-                <span>POS Software</span>
-              </Link>
-              <Link
-                href="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold flex items-center gap-2"
-              >
-                <Store className="w-4 h-4" />
-                <span>Staff Login</span>
-              </Link>
-            </div>
-
             <div className="space-y-1">
               {navLinks.map((link) => (
                 <Link
@@ -191,13 +152,22 @@ export default function PublicNavbar({ settings }: { settings?: any }) {
               ))}
             </div>
 
-            <div className="pt-2">
+            <div className="pt-2 flex flex-col gap-2">
+              <Link
+                href="/menu"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full py-2.5 rounded-xl bg-orange-50 text-orange-600 text-center font-bold text-xs border border-orange-200 flex items-center justify-center gap-2"
+              >
+                <ShoppingBag className="w-4 h-4" />
+                <span>Browse Menu</span>
+              </Link>
               <Link
                 href="/reservations"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold text-center block text-xs shadow-md shadow-orange-500/20"
+                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-center font-bold text-xs shadow-md shadow-orange-500/20 flex items-center justify-center gap-2"
               >
-                Reserve A Table
+                <Calendar className="w-4 h-4" />
+                <span>Book Table</span>
               </Link>
             </div>
           </div>
