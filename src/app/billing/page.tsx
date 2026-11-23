@@ -101,15 +101,10 @@ export default function BillingWorkstationPage() {
       .then((data) => {
         const user = data.user;
         setCurrentUser(user);
-        // Only SUPER_ADMIN and BILLING_STAFF can access Billing View
-        if (user.role !== 'SUPER_ADMIN' && user.role !== 'BILLING_STAFF') {
-          if (user.role === 'CHEF') router.push('/chef');
-          else if (user.role === 'WAITER' || user.role === 'CUSTOMER') router.push('/waiter');
-          else router.push('/login');
-        }
+        // Authenticated users directly view Billing without being cross-redirected
       })
       .catch(() => {
-        router.push('/login');
+        router.push('/login?target=billing');
       })
       .finally(() => {
         setAuthLoading(false);

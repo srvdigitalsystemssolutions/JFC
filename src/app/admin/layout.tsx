@@ -15,20 +15,9 @@ export default async function AdminLayout({
   const user = await getCurrentUser();
 
   // Route protection: Only SUPER_ADMIN can access the /admin suite
-  if (!user) {
-    redirect('/login');
-  }
-
-  if (user.role !== 'SUPER_ADMIN') {
-    if (user.role === 'CHEF') {
-      redirect('/chef');
-    } else if (user.role === 'BILLING_STAFF') {
-      redirect('/billing');
-    } else if (user.role === 'WAITER' || user.role === 'CUSTOMER') {
-      redirect('/waiter');
-    } else {
-      redirect('/login');
-    }
+  // If not authenticated as SUPER_ADMIN, redirect to login with target=admin (do NOT bounce to billing/chef)
+  if (!user || user.role !== 'SUPER_ADMIN') {
+    redirect('/login?target=admin');
   }
 
   return (

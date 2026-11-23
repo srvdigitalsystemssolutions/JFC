@@ -71,19 +71,10 @@ export default function WaiterFloorStationPage() {
       .then((data) => {
         const user = data.user;
         setCurrentUser(user);
-        // Only SUPER_ADMIN, WAITER, and CUSTOMER can access User/Waiter View
-        if (
-          user.role !== 'SUPER_ADMIN' &&
-          user.role !== 'WAITER' &&
-          user.role !== 'CUSTOMER'
-        ) {
-          if (user.role === 'CHEF') router.push('/chef');
-          else if (user.role === 'BILLING_STAFF') router.push('/billing');
-          else router.push('/login');
-        }
+        // Authenticated users directly view Waiter floor station without being cross-redirected
       })
       .catch(() => {
-        router.push('/login');
+        router.push('/login?target=waiter');
       })
       .finally(() => {
         setAuthLoading(false);
