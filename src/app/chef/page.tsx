@@ -14,6 +14,10 @@ import {
   UtensilsCrossed,
   LogOut,
   X,
+  Bike,
+  ShoppingBag,
+  MapPin,
+  Check,
 } from 'lucide-react';
 import AdminRoleSwitcher from '@/components/common/AdminRoleSwitcher';
 import { formatCurrency, formatDate } from '@/lib/utils';
@@ -26,6 +30,7 @@ export default function ChefPanelPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('ALL');
+  const [channelFilter, setChannelFilter] = useState<'ALL' | 'DINE_IN' | 'ONLINE'>('ALL');
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
 
@@ -253,6 +258,63 @@ export default function ChefPanelPage() {
           </button>
         </div>
 
+        {/* Channel Switcher (All vs Dine-In vs Online Zomato/Swiggy) */}
+        <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-slate-400 font-bold uppercase tracking-wider pl-1">
+              Order Source:
+            </span>
+            <div className="flex items-center gap-1.5 text-xs font-bold">
+              <button
+                onClick={() => setChannelFilter('ALL')}
+                className={`px-3 py-1.5 rounded-xl transition-all ${
+                  channelFilter === 'ALL'
+                    ? 'bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/20'
+                    : 'bg-slate-800 text-slate-400 hover:text-white'
+                }`}
+              >
+                All Sources ({orders.length})
+              </button>
+              <button
+                onClick={() => setChannelFilter('DINE_IN')}
+                className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
+                  channelFilter === 'DINE_IN'
+                    ? 'bg-blue-600 text-white font-black shadow-md shadow-blue-600/20'
+                    : 'bg-slate-800 text-slate-400 hover:text-white'
+                }`}
+              >
+                <UtensilsCrossed className="w-3.5 h-3.5" />
+                <span>Dine-In Tables ({orders.filter((o) => o.tableId).length})</span>
+              </button>
+              <button
+                onClick={() => setChannelFilter('ONLINE')}
+                className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
+                  channelFilter === 'ONLINE'
+                    ? 'bg-gradient-to-r from-red-600 to-orange-500 text-white font-black shadow-md shadow-red-500/20'
+                    : 'bg-slate-800 text-slate-400 hover:text-white'
+                }`}
+              >
+                <Bike className="w-3.5 h-3.5 text-orange-400" />
+                <span>
+                  Online Delivery (Zomato / Swiggy) (
+                  {
+                    orders.filter(
+                      (o) =>
+                        ['ZOMATO', 'SWIGGY', 'ONLINE', 'TAKEAWAY'].includes(o.orderType) ||
+                        !o.tableId
+                    ).length
+                  }
+                  )
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <div className="text-[11px] text-slate-400 flex items-center gap-1 font-mono">
+            <span>⚡ Kitchen Auto-Sync Active</span>
+          </div>
+        </div>
+
         {/* Orders Ticket Board */}
         <div>
           {loading && orders.length === 0 ? (
@@ -264,170 +326,230 @@ export default function ChefPanelPage() {
               <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
               <h3 className="font-bold text-base text-white">All Kitchen Tickets Cleared!</h3>
               <p className="text-xs text-slate-400 max-w-sm mx-auto">
-                No orders are currently awaiting cooking under filter "{statusFilter}". New table orders dispatched from the Floor Waiter view will appear here automatically.
+                No orders are currently awaiting cooking under filter "{statusFilter}". New table orders or online Zomato/Swiggy orders will appear here automatically.
               </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {orders.map((order) => {
-                const isPending = order.status === 'PENDING';
-                const isAccepted = order.status === 'ACCEPTED';
-                const isPreparing = order.status === 'PREPARING';
-                const isReady = order.status === 'READY';
-                const isCompleted = order.status === 'COMPLETED';
+              {orders
+                .filter((order) => {
+                  const isOnline =
+                    ['ZOMATO', 'SWIGGY', 'ONLINE', 'TAKEAWAY'].includes(order.orderType) ||
+                    !order.tableId;
+                  if (channelFilter === 'DINE_IN' && isOnline) return false;
+                  if (channelFilter === 'ONLINE' && !isOnline) return false;
+                  return true;
+                })
+                .map((order) => {
+                  const isPending = order.status === 'PENDING';
+                  const isAccepted = order.status === 'ACCEPTED';
+                  const isPreparing = order.status === 'PREPARING';
+                  const isReady = order.status === 'READY';
+                  const isCompleted = order.status === 'COMPLETED';
 
-                const statusColor = isPending
-                  ? 'border-amber-500/80 bg-amber-500/10 ring-2 ring-amber-500/20'
-                  : isAccepted
-                  ? 'border-blue-500/60 bg-blue-500/5'
-                  : isPreparing
-                  ? 'border-orange-500/80 bg-orange-500/10'
-                  : isReady
-                  ? 'border-emerald-500/80 bg-emerald-500/10'
-                  : 'border-slate-800 bg-slate-900/60 opacity-60';
+                  const isZomato = order.orderType === 'ZOMATO';
+                  const isSwiggy = order.orderType === 'SWIGGY';
+                  const isOnlineOrder =
+                    isZomato ||
+                    isSwiggy ||
+                    order.orderType === 'ONLINE' ||
+                    order.orderType === 'TAKEAWAY' ||
+                    !order.tableId;
 
-                return (
-                  <div
-                    key={order.id}
-                    className={`rounded-3xl border-2 p-5 flex flex-col justify-between transition-all duration-300 shadow-xl ${statusColor}`}
-                  >
-                    {/* Ticket Header */}
-                    <div className="space-y-3 pb-3 border-b border-slate-800">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-base font-black text-white">
-                            {order.orderNumber}
-                          </span>
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">
-                            {order.orderType}
-                          </span>
-                        </div>
-                        <span
-                          className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-full ${
-                            isPending
-                              ? 'bg-amber-400 text-slate-950 font-black animate-pulse'
-                              : isPreparing
-                              ? 'bg-orange-500 text-white'
-                              : isReady
-                              ? 'bg-emerald-400 text-slate-950 font-black'
-                              : 'bg-slate-700 text-slate-300'
-                          }`}
-                        >
-                          {order.status === 'PENDING' && '⚡ New Ticket'}
-                          {order.status === 'PREPARING' && '🔥 Cooking Now'}
-                          {order.status === 'READY' && '🔔 Ready To Serve'}
-                          {order.status === 'ACCEPTED' && 'Accepted'}
-                          {order.status === 'COMPLETED' && 'Delivered'}
-                        </span>
-                      </div>
+                  const statusColor = isPending
+                    ? 'border-amber-500/80 bg-amber-500/10 ring-2 ring-amber-500/20'
+                    : isAccepted
+                    ? 'border-blue-500/60 bg-blue-500/5'
+                    : isPreparing
+                    ? 'border-orange-500/80 bg-orange-500/10'
+                    : isReady
+                    ? 'border-emerald-500/80 bg-emerald-500/10'
+                    : 'border-slate-800 bg-slate-900/60 opacity-60';
 
-                      <div className="flex items-center justify-between text-xs">
-                        <div className="flex items-center gap-2">
-                          <div className="w-10 h-10 rounded-xl bg-slate-800 text-amber-400 font-black flex items-center justify-center text-sm border border-slate-700">
-                            {order.table?.tableNumber || 'Takeaway'}
-                          </div>
-                          <div>
-                            <p className="font-bold text-white text-sm">
-                              {order.table ? `Table ${order.table.tableNumber}` : 'Takeaway Order'}
-                            </p>
-                            <p className="text-[10px] text-slate-400">
-                              {order.table?.floorZone || 'Main Hall'} &bull; {order.customerName || 'Diner'}
-                            </p>
-                          </div>
-                        </div>
-
-                        <span className="text-[10px] text-slate-400 font-mono flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
-                          {new Date(order.createdAt).toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
-                        </span>
-                      </div>
-
-                      {order.specialInstructions && (
-                        <div className="p-2.5 rounded-xl bg-orange-950/40 border border-orange-500/30 text-orange-300 text-xs font-semibold">
-                          <span className="block text-[10px] uppercase font-bold text-orange-400">
-                            Order Instructions:
-                          </span>
-                          {order.specialInstructions}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Ordered Items List */}
-                    <div className="py-4 space-y-2.5 flex-1">
-                      {order.items?.map((item: any) => (
-                        <div
-                          key={item.id}
-                          className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs"
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <span className="w-7 h-7 rounded-lg bg-slate-800 text-amber-400 font-black text-xs flex items-center justify-center border border-slate-700">
-                              {item.quantity}&times;
+                  return (
+                    <div
+                      key={order.id}
+                      className={`rounded-3xl border-2 p-5 flex flex-col justify-between transition-all duration-300 shadow-xl ${statusColor}`}
+                    >
+                      {/* Ticket Header */}
+                      <div className="space-y-3 pb-3 border-b border-slate-800">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono text-base font-black text-white">
+                              {order.orderNumber}
                             </span>
+                            {isZomato ? (
+                              <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-[#E23744] text-white flex items-center gap-1 shadow-sm">
+                                <Bike className="w-3 h-3" />
+                                <span>ZOMATO</span>
+                              </span>
+                            ) : isSwiggy ? (
+                              <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-[#FC8019] text-white flex items-center gap-1 shadow-sm">
+                                <Bike className="w-3 h-3" />
+                                <span>SWIGGY</span>
+                              </span>
+                            ) : isOnlineOrder ? (
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-600/80 text-white flex items-center gap-1">
+                                <ShoppingBag className="w-3 h-3" />
+                                <span>ONLINE</span>
+                              </span>
+                            ) : (
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">
+                                {order.orderType}
+                              </span>
+                            )}
+                          </div>
+                          <span
+                            className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-full ${
+                              isPending
+                                ? 'bg-amber-400 text-slate-950 font-black animate-pulse'
+                                : isPreparing
+                                ? 'bg-orange-500 text-white'
+                                : isReady
+                                ? 'bg-emerald-400 text-slate-950 font-black'
+                                : 'bg-slate-700 text-slate-300'
+                            }`}
+                          >
+                            {order.status === 'PENDING' && '⚡ New Ticket'}
+                            {order.status === 'PREPARING' && '🔥 Cooking Now'}
+                            {order.status === 'READY' && '🔔 Ready For Rider'}
+                            {order.status === 'ACCEPTED' && 'Accepted'}
+                            {order.status === 'COMPLETED' && 'Delivered'}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-2">
+                            <div
+                              className={`w-11 h-11 rounded-xl font-black flex items-center justify-center text-xs border ${
+                                isZomato
+                                  ? 'bg-[#E23744]/20 text-[#E23744] border-[#E23744]/40'
+                                  : isSwiggy
+                                  ? 'bg-[#FC8019]/20 text-[#FC8019] border-[#FC8019]/40'
+                                  : isOnlineOrder
+                                  ? 'bg-blue-900/30 text-blue-400 border-blue-700/50'
+                                  : 'bg-slate-800 text-amber-400 border-slate-700'
+                              }`}
+                            >
+                              {order.table?.tableNumber || (isZomato ? 'ZOM' : isSwiggy ? 'SWIG' : 'DELV')}
+                            </div>
                             <div>
-                              <p className="font-bold text-white flex items-center gap-1.5">
-                                <span>{item.menuItem?.name}</span>
-                                <span className="text-[10px]">
-                                  {item.menuItem?.isVeg ? '🟢 Veg' : '🔴 Non-Veg'}
-                                </span>
+                              <p className="font-bold text-white text-sm">
+                                {order.table
+                                  ? `Table ${order.table.tableNumber}`
+                                  : isZomato
+                                  ? 'Zomato Delivery'
+                                  : isSwiggy
+                                  ? 'Swiggy Express'
+                                  : 'Online Delivery'}
                               </p>
-                              {item.specialInstructions && (
-                                <p className="text-[10px] text-amber-300 italic">
-                                  Note: &ldquo;{item.specialInstructions}&rdquo;
-                                </p>
-                              )}
+                              <p className="text-[10px] text-slate-400">
+                                {order.table?.floorZone || 'Rider Delivery'} &bull;{' '}
+                                {order.customerName || 'Online Diner'}
+                              </p>
                             </div>
                           </div>
+
+                          <span className="text-[10px] text-slate-400 font-mono flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            {new Date(order.createdAt).toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </span>
                         </div>
-                      ))}
+
+                        {order.specialInstructions && (
+                          <div className="p-2.5 rounded-xl bg-orange-950/40 border border-orange-500/30 text-orange-300 text-xs font-semibold">
+                            <span className="block text-[10px] uppercase font-bold text-orange-400">
+                              Order & Delivery Notes:
+                            </span>
+                            {order.specialInstructions}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Ordered Items List */}
+                      <div className="py-4 space-y-2.5 flex-1">
+                        {order.items?.map((item: any) => (
+                          <div
+                            key={item.id}
+                            className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs"
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <span className="w-7 h-7 rounded-lg bg-slate-800 text-amber-400 font-black text-xs flex items-center justify-center border border-slate-700">
+                                {item.quantity}&times;
+                              </span>
+                              <div>
+                                <p className="font-bold text-white flex items-center gap-1.5">
+                                  <span>{item.menuItem?.name}</span>
+                                  <span className="text-[10px]">
+                                    {item.menuItem?.isVeg ? '🟢 Veg' : '🔴 Non-Veg'}
+                                  </span>
+                                </p>
+                                {item.specialInstructions && (
+                                  <p className="text-[10px] text-amber-300 italic">
+                                    Note: &ldquo;{item.specialInstructions}&rdquo;
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Action Step Buttons */}
+                      <div className="pt-3 border-t border-slate-800 space-y-2">
+                        {isPending && (
+                          <button
+                            onClick={() => handleUpdateStatus(order.id, 'PREPARING')}
+                            disabled={updatingId === order.id}
+                            className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 transition-all shadow-lg shadow-orange-500/25"
+                          >
+                            <Flame className="w-4 h-4" />
+                            <span>🔥 Start Cooking Food Now</span>
+                          </button>
+                        )}
+
+                        {isPreparing && (
+                          <button
+                            onClick={() => handleUpdateStatus(order.id, 'READY')}
+                            disabled={updatingId === order.id}
+                            className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs flex items-center justify-center gap-1.5 transition-all shadow-lg shadow-emerald-500/25"
+                          >
+                            <Bell className="w-4 h-4" />
+                            <span>
+                              {isOnlineOrder
+                                ? '🔔 Food Prepared & Packed (Notify Rider & Billing)'
+                                : '✅ Mark Food Ready (Notify Waiter)'}
+                            </span>
+                          </button>
+                        )}
+
+                        {isReady && (
+                          <button
+                            onClick={() => handleUpdateStatus(order.id, 'COMPLETED')}
+                            disabled={updatingId === order.id}
+                            className="w-full py-3 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-emerald-100 font-bold text-xs flex items-center justify-center gap-1.5 transition-all"
+                          >
+                            <CheckCircle2 className="w-4 h-4 text-emerald-300" />
+                            <span>
+                              {isOnlineOrder
+                                ? '🛵 Handed Over to Delivery Rider'
+                                : '🍽️ Delivered / Served to Table'}
+                            </span>
+                          </button>
+                        )}
+
+                        {isCompleted && (
+                          <div className="text-center py-2 text-slate-500 text-[11px] font-bold">
+                            ✓ Delivered &amp; Settled at Billing
+                          </div>
+                        )}
+                      </div>
                     </div>
-
-                    {/* Action Step Buttons */}
-                    <div className="pt-3 border-t border-slate-800 space-y-2">
-                      {isPending && (
-                        <button
-                          onClick={() => handleUpdateStatus(order.id, 'PREPARING')}
-                          disabled={updatingId === order.id}
-                          className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 transition-all shadow-lg shadow-orange-500/25"
-                        >
-                          <Flame className="w-4 h-4" />
-                          <span>🔥 Start Cooking Food Now</span>
-                        </button>
-                      )}
-
-                      {isPreparing && (
-                        <button
-                          onClick={() => handleUpdateStatus(order.id, 'READY')}
-                          disabled={updatingId === order.id}
-                          className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs flex items-center justify-center gap-1.5 transition-all shadow-lg shadow-emerald-500/25"
-                        >
-                          <Bell className="w-4 h-4" />
-                          <span>✅ Mark Food Ready (Notify Waiter)</span>
-                        </button>
-                      )}
-
-                      {isReady && (
-                        <button
-                          onClick={() => handleUpdateStatus(order.id, 'ACCEPTED')}
-                          disabled={updatingId === order.id}
-                          className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 transition-all"
-                        >
-                          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                          <span>🍽️ Delivered / Served to Table</span>
-                        </button>
-                      )}
-
-                      {isCompleted && (
-                        <div className="text-center py-2 text-slate-500 text-[11px] font-bold">
-                          ✓ Ticket Delivered & Settled at Billing
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
           )}
         </div>

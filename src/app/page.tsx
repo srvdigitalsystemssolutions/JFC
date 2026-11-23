@@ -18,6 +18,7 @@ import PublicNavbar from '@/components/public/PublicNavbar';
 import PublicFooter from '@/components/public/PublicFooter';
 import AdminRoleSwitcher from '@/components/common/AdminRoleSwitcher';
 import HomeReservationWidget from '@/components/public/HomeReservationWidget';
+import TypewriterEffect from '@/components/public/TypewriterEffect';
 import { formatCurrency } from '@/lib/utils';
 
 export const revalidate = 0;
@@ -79,11 +80,19 @@ export default async function CustomerHomePage() {
               {/* Decorative Flourish Divider */}
               <div className="header-text-divider lg:mx-0" />
 
-              {/* Main Heading: High-Contrast Serif & Calligraphy */}
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.1] font-ubuntu">
+              {/* Main Heading: High-Contrast Serif & Calligraphic Typewriter Animation */}
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.15] font-ubuntu">
                 Authentic Chennai &amp; Royal <br />
-                <span className="font-aguafina text-5xl sm:text-6xl lg:text-7xl text-[#f2be54] font-normal block mt-2 drop-shadow-[0_2px_15px_rgba(242,190,84,0.35)]">
-                  Dum Pukht Briyani Flavours
+                <span className="font-dancing text-4xl sm:text-5xl lg:text-6xl text-[#f2be54] font-bold block mt-2 drop-shadow-[0_2px_15px_rgba(242,190,84,0.35)] min-h-[1.3em]">
+                  <TypewriterEffect
+                    words={[
+                      'Freshly Cooked Every Day',
+                      'Perfect for Family Meals',
+                      'Authentic Dum Pukht Flavors',
+                      'Fast Delivery & Royal Feasts',
+                      'Slow Simmered Heritage Spices',
+                    ]}
+                  />
                 </span>
               </h1>
 
