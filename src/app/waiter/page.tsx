@@ -70,8 +70,13 @@ export default function WaiterFloorStationPage() {
       })
       .then((data) => {
         const user = data.user;
+        // Require active WAITER or SUPER_ADMIN role.
+        // If not logged in as Waiter, view login page first so the employee can enter their ID and password!
+        if (!user || (user.role !== 'WAITER' && user.role !== 'CUSTOMER' && user.role !== 'SUPER_ADMIN')) {
+          router.push('/login?target=waiter');
+          return;
+        }
         setCurrentUser(user);
-        // Authenticated users directly view Waiter floor station without being cross-redirected
       })
       .catch(() => {
         router.push('/login?target=waiter');

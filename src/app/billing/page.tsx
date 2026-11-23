@@ -100,8 +100,13 @@ export default function BillingWorkstationPage() {
       })
       .then((data) => {
         const user = data.user;
+        // Require active BILLING_STAFF or SUPER_ADMIN role.
+        // If not logged in as Billing, view login page first so the employee can enter their ID and password!
+        if (!user || (user.role !== 'BILLING_STAFF' && user.role !== 'SUPER_ADMIN')) {
+          router.push('/login?target=billing');
+          return;
+        }
         setCurrentUser(user);
-        // Authenticated users directly view Billing without being cross-redirected
       })
       .catch(() => {
         router.push('/login?target=billing');
