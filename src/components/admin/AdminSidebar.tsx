@@ -81,15 +81,15 @@ export default function AdminSidebar({ currentUser }: SidebarProps) {
       {/* Brand Header */}
       <div className="p-5 border-b border-slate-800 flex items-center justify-between">
         <Link href="/admin" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/20 group-hover:scale-105 transition-transform">
-            <Utensils className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-xl bg-slate-950 border border-amber-500/50 p-1 flex items-center justify-center text-white shadow-lg shadow-orange-500/20 group-hover:scale-105 transition-transform overflow-hidden">
+            <img src="/images/jfc-logo.svg" alt="JFC Logo" className="w-full h-full object-contain" />
           </div>
           <div>
             <h1 className="font-bold text-base tracking-wide text-white group-hover:text-amber-400 transition-colors">
-              Royal Spice
+              Johnson Food Court
             </h1>
-            <p className="text-xs text-slate-400 uppercase tracking-widest font-medium">
-              Super Admin
+            <p className="text-[10px] text-amber-400 uppercase tracking-widest font-black">
+              JFC &bull; Super Admin
             </p>
           </div>
         </Link>

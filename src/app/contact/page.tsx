@@ -9,7 +9,9 @@ import {
   Send,
   CheckCircle2,
   AlertCircle,
-  MessageSquare,
+  ExternalLink,
+  Star,
+  Flame,
 } from 'lucide-react';
 import PublicNavbar from '@/components/public/PublicNavbar';
 import PublicFooter from '@/components/public/PublicFooter';
@@ -19,7 +21,7 @@ export default function ContactPage() {
     name: '',
     email: '',
     phone: '',
-    subject: 'General Dining Inquiry',
+    subject: 'Table or Event Inquiry',
     message: '',
   });
 
@@ -50,7 +52,7 @@ export default function ContactPage() {
         name: '',
         email: '',
         phone: '',
-        subject: 'General Dining Inquiry',
+        subject: 'Table or Event Inquiry',
         message: '',
       });
     } catch (e: any) {
@@ -66,14 +68,15 @@ export default function ContactPage() {
 
       <section className="bg-slate-950 text-white py-16 text-center border-b border-slate-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-8 space-y-4">
-          <span className="px-3 py-1 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-400 text-xs font-bold uppercase tracking-wider inline-block">
-            Get In Touch
+          <span className="px-3 py-1 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-400 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
+            <Flame className="w-3.5 h-3.5" />
+            <span>Connect With JFC Vellore</span>
           </span>
-          <h1 className="text-3xl sm:text-5xl font-black text-white">
-            Location, Hours & Banquet Enquiries
+          <h1 className="text-3xl sm:text-5xl font-black text-white font-ubuntu">
+            Location, Hours &amp; Customer Inquiries
           </h1>
-          <p className="text-sm text-slate-400 max-w-xl mx-auto">
-            Have questions regarding private dining, banquets, catering, or table bookings? Our concierge team is at your service.
+          <p className="text-sm text-slate-400 max-w-xl mx-auto font-droid">
+            Questions regarding outdoor garden reservations, party orders, catering, or directions? Our team at Johnson Food Court is happy to assist.
           </p>
         </div>
       </section>
@@ -83,7 +86,9 @@ export default function ContactPage() {
           {/* Contact Details & Map Card (Col 5) */}
           <div className="lg:col-span-5 space-y-6">
             <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-5">
-              <h3 className="font-black text-base text-slate-900">Restaurant Information</h3>
+              <h3 className="font-black text-base text-slate-900 font-ubuntu">
+                Johnson Food Court (JFC)
+              </h3>
 
               <div className="space-y-4 text-xs text-slate-600">
                 <div className="flex items-start gap-3">
@@ -92,7 +97,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <strong className="text-slate-900 block font-bold">Address</strong>
-                    <span>42 Gourmet Avenue, Culinary District, Metro City 560001</span>
+                    <span>Sherwood, Bagayam, Arni Road, Pennathur, Vellore, Tamil Nadu – 632011</span>
                   </div>
                 </div>
 
@@ -101,8 +106,10 @@ export default function ContactPage() {
                     <Phone className="w-4 h-4" />
                   </div>
                   <div>
-                    <strong className="text-slate-900 block font-bold">Contact Number</strong>
-                    <span>+91 98765 43210 / +91 98765 43211</span>
+                    <strong className="text-slate-900 block font-bold">Contact Phone</strong>
+                    <a href="tel:+919965278872" className="text-orange-600 font-bold hover:underline">
+                      +91 99652 78872
+                    </a>
                   </div>
                 </div>
 
@@ -112,7 +119,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <strong className="text-slate-900 block font-bold">Email</strong>
-                    <span>contact@royalspice.com / reservations@royalspice.com</span>
+                    <span>contact@johnsonfoodcourt.com</span>
                   </div>
                 </div>
 
@@ -122,20 +129,48 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <strong className="text-slate-900 block font-bold">Opening Hours</strong>
-                    <span>Monday &ndash; Sunday: 11:00 AM &ndash; 11:30 PM</span>
+                    <span>Mon &ndash; Sat: 10:30 AM &ndash; 11:30 PM<br />Sun: 12:30 PM &ndash; 11:30 PM</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Stylized Map View Box */}
-            <div className="rounded-3xl overflow-hidden border border-slate-200 bg-slate-900 text-white p-6 shadow-sm relative group">
+            {/* Direct Map & Justdial Action Card */}
+            <div className="rounded-3xl overflow-hidden border border-slate-200 bg-slate-900 text-white p-6 shadow-sm relative group space-y-4">
               <div className="space-y-2 relative z-10">
-                <span className="text-[10px] uppercase font-bold text-orange-400">Prime Location</span>
-                <h4 className="text-sm font-extrabold">Valet Parking & Metro Access</h4>
+                <span className="text-[10px] uppercase font-bold text-amber-400 font-ubuntu">
+                  Directions &amp; Verified Listings
+                </span>
+                <h4 className="text-sm font-extrabold font-ubuntu">
+                  Pennathur / Bagayam, Arni Road Stretch
+                </h4>
                 <p className="text-xs text-slate-300">
-                  Complimentary valet parking available at the main entrance. Located 2 minutes from Central Metro Station.
+                  Easy parking for two-wheelers and cars. Near Bagayam and Thuthipattu junction.
                 </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <a
+                  href="https://maps.app.goo.gl/VubJq18cKDMrij7w5"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 transition-colors"
+                >
+                  <MapPin className="w-3.5 h-3.5" />
+                  <span>Google Maps</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+
+                <a
+                  href="https://www.justdial.com/Vellore/Jhonson-Food-Court-Jfc-Bagayam-Pennathur/9999PX416-X416-240319224157-K4W3_BZDET"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-orange-300 font-bold text-xs border border-orange-500/30 flex items-center justify-center gap-2 transition-colors"
+                >
+                  <Star className="w-3.5 h-3.5 fill-orange-400 text-orange-400" />
+                  <span>Justdial Reviews</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
               </div>
             </div>
           </div>
@@ -143,7 +178,7 @@ export default function ContactPage() {
           {/* Contact Inquiry Form (Col 7) */}
           <div className="lg:col-span-7 bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
             <div>
-              <h3 className="font-black text-lg text-slate-900">Send Us A Message</h3>
+              <h3 className="font-black text-lg text-slate-900 font-ubuntu">Send Us A Message</h3>
               <p className="text-xs text-slate-500 mt-1">
                 Submissions automatically create real-time lead records in the Super Admin Messages module.
               </p>
@@ -153,7 +188,7 @@ export default function ContactPage() {
               <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2.5">
                 <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
                 <span>
-                  Thank you! Your message has been transmitted to our management team. We will contact you shortly.
+                  Thank you! Your message has been received by Johnson Food Court management. We will contact you shortly.
                 </span>
               </div>
             )}
@@ -174,7 +209,7 @@ export default function ContactPage() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="e.g. Rahul Sharma"
+                    placeholder="e.g. Suresh Kumar"
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-orange-500"
                   />
                 </div>
@@ -199,35 +234,34 @@ export default function ContactPage() {
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    placeholder="+91 98765 00000"
+                    placeholder="+91 99652..."
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-orange-500"
                   />
                 </div>
 
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">Enquiry Subject</label>
+                  <label className="font-bold text-slate-700 block mb-1">Inquiry Purpose</label>
                   <select
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-orange-500"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-orange-500 font-medium"
                   >
                     <option value="General Dining Inquiry">General Dining Inquiry</option>
-                    <option value="Banquet & Event Booking">Banquet & Event Booking</option>
-                    <option value="Private Dining Suite">Private Dining Suite</option>
-                    <option value="Catering Service">Catering Service</option>
-                    <option value="Chef Special Request">Chef Special Request</option>
+                    <option value="Outdoor Table Booking">Outdoor Table Booking</option>
+                    <option value="Birthday / Event Celebration">Birthday / Event Celebration</option>
+                    <option value="Bulk Takeaway / Catering">Bulk Takeaway / Catering</option>
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="font-bold text-slate-700 block mb-1">Your Message *</label>
+                <label className="font-bold text-slate-700 block mb-1">Message Details *</label>
                 <textarea
-                  rows={5}
                   required
+                  rows={4}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder="Tell us about your requirements, date, guest count, or questions..."
+                  placeholder="Tell us your requirements, estimated party size, or questions..."
                   className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-orange-500"
                 />
               </div>
@@ -235,10 +269,10 @@ export default function ContactPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold text-xs shadow-lg shadow-orange-500/25 transition-all flex items-center justify-center gap-2"
+                className="px-6 py-3 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-slate-950 font-black rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 disabled:opacity-50 transition-all font-ubuntu uppercase tracking-wider"
               >
-                <Send className="w-4 h-4" />
-                <span>{isSubmitting ? 'Sending Message...' : 'Submit Message'}</span>
+                <Send className="w-3.5 h-3.5" />
+                <span>{isSubmitting ? 'Sending Message...' : 'Submit Inquiry to JFC'}</span>
               </button>
             </form>
           </div>

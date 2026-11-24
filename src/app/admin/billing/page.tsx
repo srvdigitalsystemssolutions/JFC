@@ -276,9 +276,9 @@ export default function BillingManagementPage() {
             {/* Receipt Body */}
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 text-xs font-mono text-slate-800">
               <div className="text-center space-y-0.5">
-                <h3 className="font-bold text-sm tracking-wide text-slate-900">ROYAL SPICE GRAND</h3>
-                <p className="text-[10px] text-slate-500">42 Gourmet Avenue, Metro City</p>
-                <p className="text-[10px] text-slate-500">GSTIN: 33AABCT9988D1Z9 | Phone: +91 98765 43210</p>
+                <h3 className="font-bold text-sm tracking-wide text-slate-900">JOHNSON FOOD COURT (JFC)</h3>
+                <p className="text-[10px] text-slate-500">Sherwood, Arni Road, Pennathur, Vellore - 632011</p>
+                <p className="text-[10px] text-slate-500">GSTIN: 33AAACJ1234F1Z5 | Phone: +91 99652 78872</p>
               </div>
 
               <div className="border-t border-dashed border-slate-300 pt-2 flex justify-between text-[11px]">

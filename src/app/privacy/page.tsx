@@ -13,7 +13,7 @@ export default function PrivacyPolicyPage() {
         <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xs space-y-4 text-xs text-slate-600 leading-relaxed">
           <h2 className="text-sm font-bold text-slate-900">1. Information We Collect</h2>
           <p>
-            When you place an order, book a table reservation, or submit a review on Royal Spice, we collect necessary contact information including your name, phone number, email address, and dining preferences.
+            When you place an order, book a table reservation, or submit a review on Johnson Food Court (JFC), we collect necessary contact information including your name, phone number, email address, and dining preferences.
           </p>
 
           <h2 className="text-sm font-bold text-slate-900">2. How We Use Your Information</h2>

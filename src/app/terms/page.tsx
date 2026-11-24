@@ -13,7 +13,7 @@ export default function TermsPage() {
         <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xs space-y-4 text-xs text-slate-600 leading-relaxed">
           <h2 className="text-sm font-bold text-slate-900">1. Acceptance of Terms</h2>
           <p>
-            By accessing Royal Spice Grand’s digital services, ordering systems, or reservations, you agree to comply with our dining policies and house rules.
+            By accessing Johnson Food Court (JFC)’s digital services, ordering systems, or reservations, you agree to comply with our dining policies and house rules.
           </p>
 
           <h2 className="text-sm font-bold text-slate-900">2. Dining & Table Reservations</h2>

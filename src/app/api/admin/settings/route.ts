@@ -11,7 +11,11 @@ export async function GET() {
       settings = await prisma.setting.create({
         data: {
           id: 'default',
-          restaurantName: 'Royal Spice Grand Restaurant & Bar',
+          restaurantName: 'Johnson Food Court (JFC)',
+          tagLine: 'Multi-Cuisine Food Court & Open-Air Garden Dining',
+          address: 'Sherwood, Bagayam, Arni Road, Pennathur, Vellore, Tamil Nadu – 632011',
+          phone: '+91 99652 78872',
+          email: 'contact@johnsonfoodcourt.com',
         },
       });
     }
@@ -64,7 +68,7 @@ export async function PUT(request: Request) {
       },
       create: {
         id: 'default',
-        restaurantName: restaurantName || 'Royal Spice',
+        restaurantName: restaurantName || 'Johnson Food Court (JFC)',
         taxRate: parseFloat(taxRate) || 5.0,
       },
     });

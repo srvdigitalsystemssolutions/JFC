@@ -84,7 +84,7 @@ function LoginFormContent() {
       color: 'from-purple-500 to-violet-600',
     },
   }[target || ''] || {
-    title: 'Royal Spice Grand',
+    title: 'Johnson Food Court (JFC)',
     subtitle: 'Sign in to access your role-based restaurant workstation',
     button: 'Sign In to Workstation',
     icon: Utensils,

@@ -1590,16 +1590,16 @@ export default function BillingWorkstationPage() {
               {/* Header */}
               <div className="text-center space-y-1">
                 <p className="font-black text-sm tracking-wider uppercase">
-                  {settings?.restaurantName || 'ROYAL SPICE GRAND'}
+                  {settings?.restaurantName || 'JOHNSON FOOD COURT (JFC)'}
                 </p>
                 <p className="text-[10px] text-slate-600">
-                  {settings?.address || '42 Gourmet Avenue, Culinary District'}
+                  {settings?.address || 'Sherwood, Arni Road, Pennathur, Vellore - 632011'}
                 </p>
                 <p className="text-[10px] text-slate-600">
-                  Phone: {settings?.phone || '+91 98765 43210'}
+                  Phone: {settings?.phone || '+91 99652 78872'}
                 </p>
                 <p className="text-[10px] font-bold text-slate-800">
-                  GSTIN: {settings?.taxNumber || '33AABCT9988D1Z9'}
+                  GSTIN: {settings?.taxNumber || '33AAACJ1234F1Z5'}
                 </p>
               </div>
 

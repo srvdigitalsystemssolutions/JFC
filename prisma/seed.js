@@ -4,13 +4,14 @@ const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('--- Starting Database Seeding ---');
+  console.log('--- Seeding Johnson Food Court (JFC) Database ---');
 
   // 1. Roles
   const roles = [
     { name: 'SUPER_ADMIN', description: 'Full administrative access to all modules and configurations' },
     { name: 'CHEF', description: 'Kitchen Display System access to view and update food orders' },
     { name: 'BILLING_STAFF', description: 'Point of sale, table assignment, billing, and checkout access' },
+    { name: 'WAITER', description: 'Floor steward table management, status updates and KOT order dispatch' },
     { name: 'CUSTOMER', description: 'Guest / customer website viewing and order placement' },
   ];
 
@@ -101,49 +102,118 @@ async function main() {
         },
       });
     }
+
+    // Default permissions for Waiter
+    if (['DASHBOARD', 'TABLES', 'MENU'].includes(mod)) {
+      await prisma.permission.upsert({
+        where: {
+          roleId_module: {
+            roleId: createdRoles['WAITER'].id,
+            module: mod,
+          },
+        },
+        update: { canCreate: true, canRead: true, canUpdate: true, canDelete: false },
+        create: {
+          roleId: createdRoles['WAITER'].id,
+          module: mod,
+          canCreate: true,
+          canRead: true,
+          canUpdate: true,
+          canDelete: false,
+        },
+      });
+    }
   }
   console.log('✓ RBAC Permissions seeded');
 
-  // 3. Default Users
+  // 3. System Users (Providing both @johnsonfoodcourt.com and @royalspice.com for backwards testing compatibility)
   const salt = await bcrypt.genSalt(10);
   const adminPassword = await bcrypt.hash('admin123', salt);
   const chefPassword = await bcrypt.hash('chef123', salt);
   const posPassword = await bcrypt.hash('pos123', salt);
+  const waiterPassword = await bcrypt.hash('waiter123', salt);
   const userPassword = await bcrypt.hash('user123', salt);
 
   const defaultUsers = [
+    // Primary Johnson Food Court Accounts
     {
-      name: 'Alexander Wright (Super Admin)',
-      email: 'admin@royalspice.com',
+      name: 'Johnson (General Manager)',
+      email: 'admin@johnsonfoodcourt.com',
       password: adminPassword,
-      phone: '+91 98765 00001',
+      phone: '+91 99652 78872',
       roleId: createdRoles['SUPER_ADMIN'].id,
       status: 'ACTIVE',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
     },
     {
-      name: 'Chef Marco Pierre',
-      email: 'chef@royalspice.com',
+      name: 'Chef Murugan (Head Chef)',
+      email: 'chef@johnsonfoodcourt.com',
       password: chefPassword,
-      phone: '+91 98765 00002',
+      phone: '+91 99652 78873',
       roleId: createdRoles['CHEF'].id,
       status: 'ACTIVE',
       avatar: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=256&q=80',
     },
     {
-      name: 'Sarah Connor (Cashier)',
-      email: 'pos@royalspice.com',
+      name: 'Praveen Kumar (Cashier)',
+      email: 'pos@johnsonfoodcourt.com',
       password: posPassword,
-      phone: '+91 98765 00003',
+      phone: '+91 99652 78874',
       roleId: createdRoles['BILLING_STAFF'].id,
       status: 'ACTIVE',
       avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=256&q=80',
     },
     {
-      name: 'Rahul Sharma (Guest)',
+      name: 'Karthik (Floor Steward)',
+      email: 'waiter@johnsonfoodcourt.com',
+      password: waiterPassword,
+      phone: '+91 99652 78875',
+      roleId: createdRoles['WAITER'].id,
+      status: 'ACTIVE',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80',
+    },
+    // Backwards compatibility accounts for quick access
+    {
+      name: 'Johnson Admin (Super Admin)',
+      email: 'admin@royalspice.com',
+      password: adminPassword,
+      phone: '+91 99652 78872',
+      roleId: createdRoles['SUPER_ADMIN'].id,
+      status: 'ACTIVE',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
+    },
+    {
+      name: 'Head Chef KDS',
+      email: 'chef@royalspice.com',
+      password: chefPassword,
+      phone: '+91 99652 78873',
+      roleId: createdRoles['CHEF'].id,
+      status: 'ACTIVE',
+      avatar: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=256&q=80',
+    },
+    {
+      name: 'JFC Billing Cashier',
+      email: 'pos@royalspice.com',
+      password: posPassword,
+      phone: '+91 99652 78874',
+      roleId: createdRoles['BILLING_STAFF'].id,
+      status: 'ACTIVE',
+      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=256&q=80',
+    },
+    {
+      name: 'Floor Steward',
+      email: 'waiter@royalspice.com',
+      password: waiterPassword,
+      phone: '+91 99652 78875',
+      roleId: createdRoles['WAITER'].id,
+      status: 'ACTIVE',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80',
+    },
+    {
+      name: 'Vellore Guest Diner',
       email: 'john@example.com',
       password: userPassword,
-      phone: '+91 98765 00004',
+      phone: '+91 98401 23456',
       roleId: createdRoles['CUSTOMER'].id,
       status: 'ACTIVE',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80',
@@ -153,52 +223,76 @@ async function main() {
   for (const u of defaultUsers) {
     await prisma.user.upsert({
       where: { email: u.email },
-      update: { name: u.name, status: u.status, roleId: u.roleId },
+      update: { name: u.name, status: u.status, roleId: u.roleId, password: u.password, phone: u.phone },
       create: u,
     });
   }
   console.log('✓ System Users seeded');
 
-  // 4. Categories
+  // 4. Categories for Johnson Food Court (JFC)
   const categoriesData = [
     {
-      name: 'Starters & Appetizers',
-      slug: 'starters-appetizers',
-      description: 'Crisp, spicy and sizzling delicacies to ignite your appetite',
-      image: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=400&q=80',
+      name: 'Shawarma & Rolls',
+      slug: 'shawarma-rolls',
+      description: 'Signature juicy spit-roasted chicken shawarma rolls and kuboos platters',
+      image: 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?auto=format&fit=crop&w=600&q=80',
       displayOrder: 1,
       isActive: true,
     },
     {
-      name: 'Main Course Specialties',
-      slug: 'main-course-specialties',
-      description: 'Rich slow-cooked gravies, royal curries and tandoori classics',
-      image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=400&q=80',
+      name: 'Charcoal BBQ & Grills',
+      slug: 'charcoal-bbq-grills',
+      description: 'Smokey open-air charcoal tandoori, alfaham chicken and sizzling kebabs',
+      image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80',
       displayOrder: 2,
       isActive: true,
     },
     {
-      name: 'Artisan Breads & Rice',
-      slug: 'artisan-breads-rice',
-      description: 'Hand-stretched naans, fragrant basmati biryanis and pulao',
-      image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=400&q=80',
+      name: 'Fast Food & Starters',
+      slug: 'fast-food-starters',
+      description: 'Crispy honey chilli chicken, chicken lollipops, crunchy wings & finger bites',
+      image: 'https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=600&q=80',
       displayOrder: 3,
       isActive: true,
     },
     {
-      name: 'Desserts & Sweets',
-      slug: 'desserts-sweets',
-      description: 'Decadent royal treats, artisanal kulfis and hot halwas',
-      image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=400&q=80',
+      name: 'Biryani & Rice Bowls',
+      slug: 'biryani-rice-bowls',
+      description: 'Fragrant seeraga samba & basmati dum biryani with raita and spicy dalcha',
+      image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80',
       displayOrder: 4,
       isActive: true,
     },
     {
-      name: 'Beverages & Mocktails',
-      slug: 'beverages-mocktails',
-      description: 'Chilled signature quenchers, fresh fruit coolers and lassis',
-      image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=400&q=80',
+      name: 'Chinese & Wok Specials',
+      slug: 'chinese-wok-specials',
+      description: 'Wok-tossed chicken fried rice, spicy Schezwan noodles, and dragon chicken',
+      image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80',
       displayOrder: 5,
+      isActive: true,
+    },
+    {
+      name: 'South Indian Parotta & Tiffin',
+      slug: 'parotta-tiffin',
+      description: 'Fluffy Malabar bun parottas, chicken kothu parotta & tandoori naans',
+      image: 'https://images.unsplash.com/photo-1626074353765-517a681e40be?auto=format&fit=crop&w=600&q=80',
+      displayOrder: 6,
+      isActive: true,
+    },
+    {
+      name: 'Burgers & Sandwiches',
+      slug: 'burgers-sandwiches',
+      description: 'JFC crispy zinger burgers, cheesy loaded fries & triple-decker club sandwiches',
+      image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80',
+      displayOrder: 7,
+      isActive: true,
+    },
+    {
+      name: 'Juices, Shakes & Mojitos',
+      slug: 'juices-shakes-mojitos',
+      description: 'Tender coconut falooda, mango shakes, blue curacao mojitos & fresh lime sodas',
+      image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80',
+      displayOrder: 8,
       isActive: true,
     },
   ];
@@ -214,102 +308,237 @@ async function main() {
   }
   console.log('✓ Categories seeded');
 
-  // 5. Menu Items
+  // 5. Authentic Menu Items of Johnson Food Court (JFC)
   const menuItemsData = [
+    // Shawarma
     {
-      name: 'Paneer Tikka Angara',
-      slug: 'paneer-tikka-angara',
-      description: 'Cottage cheese marinated in Kashmiri chili and hung curd, roasted in clay oven.',
-      price: 280,
-      categoryId: createdCategories['starters-appetizers'].id,
-      isVeg: true,
-      isAvailable: true,
-      image: 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=400&q=80',
-      tags: 'Chef Special, Spicy, Tandoor',
-      prepTime: 15,
-    },
-    {
-      name: 'Murgh Malai Kebab',
-      slug: 'murgh-malai-kebab',
-      description: 'Melt-in-mouth chicken chunks infused with cream, cheese, and crushed cardamom.',
-      price: 340,
-      categoryId: createdCategories['starters-appetizers'].id,
+      name: 'JFC Special Rumali Shawarma Roll',
+      slug: 'jfc-special-rumali-shawarma',
+      description: 'Slow-roasted succulent shredded chicken wrapped in soft rumali roti with signature garlic toum and pickles.',
+      price: 130,
+      categoryId: createdCategories['shawarma-rolls'].id,
       isVeg: false,
       isAvailable: true,
-      image: 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=400&q=80',
-      tags: 'Best Seller, Mild, Clay Oven',
-      prepTime: 18,
-    },
-    {
-      name: 'Royal Butter Chicken',
-      slug: 'royal-butter-chicken',
-      description: 'Tender chicken braised in rich satin tomato and cashew butter gravy.',
-      price: 390,
-      categoryId: createdCategories['main-course-specialties'].id,
-      isVeg: false,
-      isAvailable: true,
-      image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=400&q=80',
-      tags: 'Signature, Creamy, Must Try',
-      prepTime: 20,
-    },
-    {
-      name: 'Dal Makhani Bukhara',
-      slug: 'dal-makhani-bukhara',
-      description: 'Black lentils slow-cooked overnight with churned butter and dried fenugreek.',
-      price: 260,
-      categoryId: createdCategories['main-course-specialties'].id,
-      isVeg: true,
-      isAvailable: true,
-      image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=400&q=80',
-      tags: 'Classic, Creamy',
-      prepTime: 12,
-    },
-    {
-      name: 'Dum Pukht Mutton Biryani',
-      slug: 'dum-pukht-mutton-biryani',
-      description: 'Aromatic long grain basmati steamed with tender spiced goat meat in sealed earthen pot.',
-      price: 450,
-      categoryId: createdCategories['artisan-breads-rice'].id,
-      isVeg: false,
-      isAvailable: true,
-      image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=400&q=80',
-      tags: 'Chef Special, Royal Dum, Spicy',
-      prepTime: 25,
-    },
-    {
-      name: 'Garlic Butter Naan',
-      slug: 'garlic-butter-naan',
-      description: 'Leavened bread baked on tandoor walls topped with minced garlic and coriander butter.',
-      price: 75,
-      categoryId: createdCategories['artisan-breads-rice'].id,
-      isVeg: true,
-      isAvailable: true,
-      image: 'https://images.unsplash.com/photo-1626074353765-517a681e40be?auto=format&fit=crop&w=400&q=80',
-      tags: 'Tandoor, Fresh',
+      image: 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?auto=format&fit=crop&w=600&q=80',
+      tags: 'Crowd Favorite, Best Seller, JFC Special',
       prepTime: 8,
     },
     {
-      name: 'Saffron Gulab Jamun with Rabri',
-      slug: 'saffron-gulab-jamun-rabri',
-      description: 'Warm golden milk dumplings soaked in cardamom sugar syrup served on condensed milk bed.',
-      price: 180,
-      categoryId: createdCategories['desserts-sweets'].id,
-      isVeg: true,
+      name: 'Plate Shawarma with Fresh Kuboos',
+      slug: 'plate-shawarma-kuboos',
+      description: 'Generous serving of spiced shredded chicken, garlic sauce, french fries, hummus, and 2 fresh warm kuboos.',
+      price: 170,
+      categoryId: createdCategories['shawarma-rolls'].id,
+      isVeg: false,
       isAvailable: true,
-      image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=400&q=80',
-      tags: 'Sweet, Royal Dessert',
-      prepTime: 5,
+      image: 'https://images.unsplash.com/photo-1561651823-34feb02250e4?auto=format&fit=crop&w=600&q=80',
+      tags: 'Hearty Portion, Signature',
+      prepTime: 10,
     },
     {
-      name: 'Royal Alfonso Mango Lassi',
-      slug: 'royal-alfonso-mango-lassi',
-      description: 'Velvety yogurt churned with Ratnagiri mango pulp and crushed pistachios.',
+      name: 'Peri Peri Spiced Chicken Shawarma',
+      slug: 'peri-peri-chicken-shawarma',
+      description: 'Signature shawarma infused with fiery African peri-peri glaze, jalapeños, and crunchy lettuce.',
       price: 140,
-      categoryId: createdCategories['beverages-mocktails'].id,
+      categoryId: createdCategories['shawarma-rolls'].id,
+      isVeg: false,
+      isAvailable: true,
+      image: 'https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=600&q=80',
+      tags: 'Spicy, Must Try',
+      prepTime: 8,
+    },
+
+    // Charcoal BBQ & Grills
+    {
+      name: 'Charcoal Tandoori Chicken (Half)',
+      slug: 'charcoal-tandoori-chicken-half',
+      description: 'Juicy chicken leg and breast marinated overnight in hung curd and aromatic spices, roasted in clay oven.',
+      price: 240,
+      categoryId: createdCategories['charcoal-bbq-grills'].id,
+      isVeg: false,
+      isAvailable: true,
+      image: 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=600&q=80',
+      tags: 'Smokey, Chef Special, Clay Oven',
+      prepTime: 18,
+    },
+    {
+      name: 'Smokey BBQ Chicken (Full Portion)',
+      slug: 'smokey-bbq-chicken-full',
+      description: 'Tender chicken char-grilled on open grates and brushed generously with hickory smoked barbecue sauce.',
+      price: 450,
+      categoryId: createdCategories['charcoal-bbq-grills'].id,
+      isVeg: false,
+      isAvailable: true,
+      image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80',
+      tags: 'Best Seller, BBQ',
+      prepTime: 20,
+    },
+    {
+      name: 'Paneer Tikka Angara',
+      slug: 'paneer-tikka-angara',
+      description: 'Fresh malai paneer cubes marinated in Kashmiri deghi mirch and mustard oil, char-grilled with capsicum & onion.',
+      price: 220,
+      categoryId: createdCategories['charcoal-bbq-grills'].id,
       isVeg: true,
       isAvailable: true,
-      image: 'https://images.unsplash.com/photo-1553787499-6f9133860278?auto=format&fit=crop&w=400&q=80',
-      tags: 'Chilled, Refreshing',
+      image: 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=600&q=80',
+      tags: 'Vegetarian, Tandoor',
+      prepTime: 15,
+    },
+
+    // Fast Food & Starters
+    {
+      name: 'Honey Chilli Chicken (Crowd Favorite)',
+      slug: 'honey-chilli-chicken',
+      description: 'Crispy batter-fried chicken chunks glazed in sweet honey, roasted dry red chillies, and toasted sesame seeds.',
+      price: 210,
+      categoryId: createdCategories['fast-food-starters'].id,
+      isVeg: false,
+      isAvailable: true,
+      image: 'https://images.unsplash.com/photo-1527477378379-fed450bbca74?auto=format&fit=crop&w=600&q=80',
+      tags: 'Crowd Favorite, Sweet & Spicy, Highly Rated',
+      prepTime: 14,
+    },
+    {
+      name: 'Crispy Chicken Lollipop (6 Pcs)',
+      slug: 'crispy-chicken-lollipop',
+      description: 'Classic Frenched chicken winglets marinated in ginger-garlic-chilli batter, deep fried and served with hot garlic dip.',
+      price: 190,
+      categoryId: createdCategories['fast-food-starters'].id,
+      isVeg: false,
+      isAvailable: true,
+      image: 'https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=600&q=80',
+      tags: 'Crispy, Starter',
+      prepTime: 12,
+    },
+    {
+      name: 'JFC Dragon Chicken',
+      slug: 'jfc-dragon-chicken',
+      description: 'Crispy chicken strips tossed in a fiery Indo-Chinese red sauce with cashew nuts, bell peppers, and scallions.',
+      price: 220,
+      categoryId: createdCategories['fast-food-starters'].id,
+      isVeg: false,
+      isAvailable: true,
+      image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80',
+      tags: 'Spicy, Chef Special',
+      prepTime: 15,
+    },
+
+    // Biryani & Rice
+    {
+      name: 'Ambur Special Chicken Dum Biryani',
+      slug: 'ambur-chicken-dum-biryani',
+      description: 'Authentic local Vellore-Ambur style Seeraga Samba rice dum biryani cooked with succulent chicken, curd & whole spices.',
+      price: 210,
+      categoryId: createdCategories['biryani-rice-bowls'].id,
+      isVeg: false,
+      isAvailable: true,
+      image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80',
+      tags: 'Vellore Special, Seeraga Samba, Dum Cooked',
+      prepTime: 12,
+    },
+    {
+      name: 'Chicken 65 Dum Biryani',
+      slug: 'chicken-65-biryani',
+      description: 'Flavorful spiced biryani rice topped with freshly fried boneless Chicken 65 chunks and boiled egg.',
+      price: 240,
+      categoryId: createdCategories['biryani-rice-bowls'].id,
+      isVeg: false,
+      isAvailable: true,
+      image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=600&q=80',
+      tags: 'Best Seller, Boneless',
+      prepTime: 10,
+    },
+
+    // Chinese & Wok
+    {
+      name: 'Chicken Schezwan Fried Rice',
+      slug: 'chicken-schezwan-fried-rice',
+      description: 'Wok-tossed long grain rice with shredded chicken, scrambled eggs, spring onions, and spicy house Schezwan chili paste.',
+      price: 180,
+      categoryId: createdCategories['chinese-wok-specials'].id,
+      isVeg: false,
+      isAvailable: true,
+      image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80',
+      tags: 'Wok Sizzler, Spicy',
+      prepTime: 12,
+    },
+    {
+      name: 'Chicken Hakka Noodles',
+      slug: 'chicken-hakka-noodles',
+      description: 'Thin egg noodles tossed with shredded chicken, crunchy carrots, cabbage, capsicum, and light soya sauce.',
+      price: 170,
+      categoryId: createdCategories['chinese-wok-specials'].id,
+      isVeg: false,
+      isAvailable: true,
+      image: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80',
+      tags: 'Quick Bite, Classic',
+      prepTime: 12,
+    },
+
+    // Parotta & South Indian Breads
+    {
+      name: 'Malabar Bun Parotta (2 Pcs)',
+      slug: 'malabar-bun-parotta-2pcs',
+      description: 'Crisp, golden spiral-layered fluffy bun parottas served with rich spicy chicken salna or veg kurma.',
+      price: 60,
+      categoryId: createdCategories['parotta-tiffin'].id,
+      isVeg: true,
+      isAvailable: true,
+      image: 'https://images.unsplash.com/photo-1626074353765-517a681e40be?auto=format&fit=crop&w=600&q=80',
+      tags: 'Fluffy, South Special',
+      prepTime: 8,
+    },
+    {
+      name: 'Chicken Kothu Parotta',
+      slug: 'chicken-kothu-parotta',
+      description: 'Street-style shredded parotta minced on hot iron griddle with tender chicken, eggs, green chillies, and aromatic salna.',
+      price: 180,
+      categoryId: createdCategories['parotta-tiffin'].id,
+      isVeg: false,
+      isAvailable: true,
+      image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=600&q=80',
+      tags: 'Street Food Icon, Spicy',
+      prepTime: 12,
+    },
+
+    // Burgers & Sandwiches
+    {
+      name: 'JFC Crispy Zinger Burger',
+      slug: 'jfc-crispy-zinger-burger',
+      description: 'Thick crunchy fried chicken fillet with creamy mayonnaise, fresh iceberg lettuce, and cheese inside toasted sesame bun.',
+      price: 140,
+      categoryId: createdCategories['burgers-sandwiches'].id,
+      isVeg: false,
+      isAvailable: true,
+      image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80',
+      tags: 'Crispy, Cheesy',
+      prepTime: 10,
+    },
+
+    // Beverages & Coolers
+    {
+      name: 'Tender Coconut Special Falooda',
+      slug: 'tender-coconut-falooda',
+      description: 'Cooling dessert beverage crafted with fresh tender coconut water & pulp, sabja seeds, rose syrup, and vanilla scoop.',
+      price: 140,
+      categoryId: createdCategories['juices-shakes-mojitos'].id,
+      isVeg: true,
+      isAvailable: true,
+      image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80',
+      tags: 'Refreshing, Dessert Shake',
+      prepTime: 6,
+    },
+    {
+      name: 'Blue Curacao Mint Mojito',
+      slug: 'blue-curacao-mint-mojito',
+      description: 'Zesty blend of crushed fresh garden mint, Persian lime juice, blue curacao cordial, and fizzy sparkling soda.',
+      price: 99,
+      categoryId: createdCategories['juices-shakes-mojitos'].id,
+      isVeg: true,
+      isAvailable: true,
+      image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80',
+      tags: 'Chilled, Fizz Mocktail',
       prepTime: 5,
     },
   ];
@@ -325,16 +554,16 @@ async function main() {
   }
   console.log('✓ Menu Items seeded');
 
-  // 6. Restaurant Tables
+  // 6. Restaurant Tables (Outdoor Garden & Food Court Zones)
   const tablesData = [
-    { tableNumber: 'T-01', capacity: 2, floorZone: 'Main Dining', status: 'AVAILABLE' },
-    { tableNumber: 'T-02', capacity: 4, floorZone: 'Main Dining', status: 'OCCUPIED' },
-    { tableNumber: 'T-03', capacity: 4, floorZone: 'Main Dining', status: 'AVAILABLE' },
-    { tableNumber: 'T-04', capacity: 6, floorZone: 'Family Corner', status: 'AVAILABLE' },
-    { tableNumber: 'T-05', capacity: 8, floorZone: 'VIP Lounge', status: 'RESERVED' },
-    { tableNumber: 'T-06', capacity: 2, floorZone: 'Rooftop Deck', status: 'AVAILABLE' },
-    { tableNumber: 'T-07', capacity: 4, floorZone: 'Rooftop Deck', status: 'OCCUPIED' },
-    { tableNumber: 'T-08', capacity: 6, floorZone: 'Garden Terrace', status: 'AVAILABLE' },
+    { tableNumber: 'T-01', capacity: 2, floorZone: 'Open-Air Garden Lawn', status: 'AVAILABLE' },
+    { tableNumber: 'T-02', capacity: 4, floorZone: 'Open-Air Garden Lawn', status: 'OCCUPIED' },
+    { tableNumber: 'T-03', capacity: 4, floorZone: 'Open-Air Garden Lawn', status: 'AVAILABLE' },
+    { tableNumber: 'T-04', capacity: 6, floorZone: 'Main Food Court Pavilion', status: 'AVAILABLE' },
+    { tableNumber: 'T-05', capacity: 8, floorZone: 'Main Food Court Pavilion', status: 'RESERVED' },
+    { tableNumber: 'T-06', capacity: 2, floorZone: 'Family Canopy', status: 'AVAILABLE' },
+    { tableNumber: 'T-07', capacity: 4, floorZone: 'Family Canopy', status: 'OCCUPIED' },
+    { tableNumber: 'T-08', capacity: 6, floorZone: 'Rooftop Deck', status: 'AVAILABLE' },
   ];
 
   const createdTables = [];
@@ -348,7 +577,7 @@ async function main() {
   }
   console.log('✓ Tables seeded');
 
-  // 7. Sample Orders & Bills for realistic Analytics
+  // 7. Sample Orders & Invoices for JFC
   const sampleOrder1 = await prisma.order.upsert({
     where: { orderNumber: 'ORD-1001' },
     update: {},
@@ -359,33 +588,33 @@ async function main() {
       customerPhone: '+91 99887 76655',
       orderType: 'DINE_IN',
       status: 'PREPARING',
-      specialInstructions: 'Make butter chicken medium spicy, no extra butter on naan.',
-      subtotal: 730,
-      taxAmount: 36.5,
+      specialInstructions: 'Make Shawarma extra spicy with garlic mayo on side.',
+      subtotal: 510,
+      taxAmount: 25.5,
       discountAmount: 0,
-      totalAmount: 766.5,
+      totalAmount: 535.5,
       items: {
         create: [
           {
-            menuItemId: createdMenuItems[2].id, // Butter Chicken
-            quantity: 1,
-            unitPrice: 390,
-            totalPrice: 390,
-            specialInstructions: 'Medium spicy',
-            status: 'PREPARING',
-          },
-          {
-            menuItemId: createdMenuItems[5].id, // Garlic Naan
+            menuItemId: createdMenuItems[0].id, // Rumali Shawarma
             quantity: 2,
-            unitPrice: 75,
-            totalPrice: 150,
+            unitPrice: 130,
+            totalPrice: 260,
+            specialInstructions: 'Extra garlic mayo',
             status: 'PREPARING',
           },
           {
-            menuItemId: createdMenuItems[6].id, // Gulab Jamun
+            menuItemId: createdMenuItems[6].id, // Honey Chilli Chicken
             quantity: 1,
-            unitPrice: 180,
-            totalPrice: 180,
+            unitPrice: 210,
+            totalPrice: 210,
+            status: 'PREPARING',
+          },
+          {
+            menuItemId: createdMenuItems[17].id, // Mojito
+            quantity: 1,
+            unitPrice: 99,
+            totalPrice: 99,
             status: 'PENDING',
           },
         ],
@@ -403,28 +632,28 @@ async function main() {
       customerPhone: '+91 91234 56789',
       orderType: 'DINE_IN',
       status: 'COMPLETED',
-      subtotal: 870,
-      taxAmount: 43.5,
+      subtotal: 780,
+      taxAmount: 39.0,
       discountAmount: 50,
-      totalAmount: 863.5,
+      totalAmount: 769.0,
       items: {
         create: [
           {
-            menuItemId: createdMenuItems[4].id, // Biryani
-            quantity: 1,
-            unitPrice: 450,
-            totalPrice: 450,
+            menuItemId: createdMenuItems[9].id, // Ambur Biryani
+            quantity: 2,
+            unitPrice: 210,
+            totalPrice: 420,
             status: 'READY',
           },
           {
-            menuItemId: createdMenuItems[0].id, // Paneer Tikka
+            menuItemId: createdMenuItems[3].id, // Tandoori Chicken Half
             quantity: 1,
-            unitPrice: 280,
-            totalPrice: 280,
+            unitPrice: 240,
+            totalPrice: 240,
             status: 'READY',
           },
           {
-            menuItemId: createdMenuItems[7].id, // Mango Lassi
+            menuItemId: createdMenuItems[16].id, // Tender Coconut Falooda
             quantity: 1,
             unitPrice: 140,
             totalPrice: 140,
@@ -443,17 +672,17 @@ async function main() {
       invoiceNumber: 'INV-2026-001',
       orderId: sampleOrder2.id,
       tableId: createdTables[6].id,
-      subtotal: 870,
+      subtotal: 780,
       taxRate: 5.0,
-      taxAmount: 43.5,
+      taxAmount: 39.0,
       discountType: 'FIXED',
       discountValue: 50,
       discountAmount: 50,
-      grandTotal: 863.5,
+      grandTotal: 769.0,
       paymentStatus: 'PAID',
       payments: {
         create: {
-          amount: 863.5,
+          amount: 769.0,
           paymentMethod: 'UPI',
           transactionRef: 'UPI-REF-99281726',
           status: 'COMPLETED',
@@ -463,31 +692,39 @@ async function main() {
   });
   console.log('✓ Sample Orders & Bills seeded');
 
-  // 8. Gallery
+  // 8. Gallery for Johnson Food Court
   const galleryItems = [
     {
-      title: 'Royal Ambience & Warm Chandeliers',
+      title: 'JFC Open-Air Garden Dining & Evening Glow',
       category: 'Ambience',
       imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80',
-      description: 'Our luxurious dining hall designed for unforgettable family evenings.',
+      description: 'Lively outdoor open-air seating with festive lights along Arni Road, Pennathur.',
       isFeatured: true,
       displayOrder: 1,
     },
     {
-      title: 'Tandoori Clay Oven Live Kitchen',
+      title: 'Live Charcoal BBQ & Shawarma Spit',
       category: 'Food',
-      imageUrl: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
-      description: 'Master chefs baking artisanal breads and sizzling kebabs in real time.',
+      imageUrl: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80',
+      description: 'Fresh rotating chicken shawarma and smokey charcoal grills prepared live.',
       isFeatured: true,
       displayOrder: 2,
     },
     {
-      title: 'Open Sky Rooftop Dining',
+      title: 'Johnson Food Court Pavilion & Dine-In Area',
       category: 'Interior',
       imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80',
-      description: 'Stargazing terrace with candle-lit tables and panoramic city views.',
+      description: 'Spacious food court setting with fast-food counters, mocktails, and tandoori.',
       isFeatured: true,
       displayOrder: 3,
+    },
+    {
+      title: 'Sizzling Honey Chilli Chicken & Appetizers',
+      category: 'Food',
+      imageUrl: 'https://images.unsplash.com/photo-1527477378379-fed450bbca74?auto=format&fit=crop&w=800&q=80',
+      description: 'JFC best-selling sweet and spicy crispy starters served fresh to diners.',
+      isFeatured: true,
+      displayOrder: 4,
     },
   ];
 
@@ -499,30 +736,30 @@ async function main() {
   }
   console.log('✓ Gallery seeded');
 
-  // 9. Testimonials
+  // 9. Authentic Local Testimonials for JFC Vellore
   const testimonialsData = [
     {
-      customerName: 'Aarav Malhotra',
-      customerRole: 'Food Critic & Blogger',
+      customerName: 'Suresh Kumar',
+      customerRole: 'Pennathur Local & Regular Diner',
       avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=256&q=80',
       rating: 5,
-      content: 'The Dal Makhani and Butter Chicken here set a benchmark in authentic culinary excellence. Absolutely phenomenal dining experience!',
+      content: 'Best open-air evening hangout spot in Pennathur Arni Road! The Rumali Shawarma and Honey Chilli Chicken are out of the world. Great family vibes.',
       isApproved: true,
     },
     {
-      customerName: 'Meera Sengupta',
-      customerRole: 'Regular Diner',
+      customerName: 'Priya Ranganathan',
+      customerRole: 'CMC Hospital Staff / Vellore',
       avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=256&q=80',
       rating: 5,
-      content: 'Incredible hospitality! We celebrated our 10th anniversary on the rooftop deck, and the staff made it truly magical.',
+      content: 'We frequently visit JFC on weekends. Pocket-friendly pricing, generous portions, and the Chicken Fried Rice & BBQ chicken taste awesome under the open sky!',
       isApproved: true,
     },
     {
-      customerName: 'Robert Vance',
-      customerRole: 'Tourist from London',
+      customerName: 'Karthik Narayanan',
+      customerRole: 'Family Diner on Arni Road',
       avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=256&q=80',
       rating: 4,
-      content: 'One of the best Indian dining places I have experienced across the globe. Fast service and stunning flavors.',
+      content: 'Superb ambiance and plenty of parking space. The Bun Parotta and Dum Biryani are top notch. Must visit when driving through Bagayam-Pennathur.',
       isApproved: true,
     },
   ];
@@ -535,23 +772,15 @@ async function main() {
   }
   console.log('✓ Testimonials seeded');
 
-  // 10. Contact Messages
+  // 10. Contact Messages for JFC
   const messagesData = [
     {
-      name: 'Pooja Verma',
-      email: 'pooja.v@example.com',
-      phone: '+91 98980 11223',
-      subject: 'Table Reservation for 20 Pax (Corporate Dinner)',
-      message: 'Hi team, we are planning our annual corporate get-together next Friday for around 20 guests. Do you have a set banquet menu option?',
+      name: 'Venkatesh Prasad',
+      email: 'venkat.p@gmail.com',
+      phone: '+91 99652 11223',
+      subject: 'Open-Air Lawn Birthday Party (30 Guests)',
+      message: 'Hi JFC Team, planning my daughter birthday party this Saturday evening at the outdoor garden. Please share party combo packages.',
       status: 'UNREAD',
-    },
-    {
-      name: 'Rohan Mehra',
-      email: 'rohan.m@example.com',
-      phone: '+91 97766 55443',
-      subject: 'Private Terrace Booking Enquiry',
-      message: 'Looking to book the terrace floor for a private birthday party on Sunday. Please connect with package details.',
-      status: 'READ',
     },
   ];
 
@@ -563,30 +792,46 @@ async function main() {
   }
   console.log('✓ Contact Messages seeded');
 
-  // 11. Restaurant Settings
+  // 11. Restaurant Settings for Johnson Food Court (JFC)
   await prisma.setting.upsert({
     where: { id: 'default' },
-    update: {},
-    create: {
-      id: 'default',
-      restaurantName: 'Royal Spice Grand Restaurant & Bar',
-      tagLine: 'Authentic Flavours, Luxury Dining',
-      logo: '/images/logo.png',
-      address: '42 Gourmet Avenue, Culinary District, Metro City, 400001',
-      phone: '+91 98765 43210',
-      email: 'contact@royalspice.com',
-      openingHours: 'Mon - Sun: 11:00 AM - 11:30 PM',
+    update: {
+      restaurantName: 'Johnson Food Court (JFC)',
+      tagLine: 'Multi-Cuisine Food Court & Open-Air Garden Dining',
+      logo: '/images/jfc-logo.svg',
+      address: 'Sherwood, Bagayam, Arni Road, Pennathur, Vellore, Tamil Nadu – 632011',
+      phone: '+91 99652 78872',
+      email: 'contact@johnsonfoodcourt.com',
+      openingHours: 'Mon - Sat: 10:30 AM - 11:30 PM | Sun: 12:30 PM - 11:30 PM',
       currency: 'INR',
       currencySymbol: '₹',
       taxRate: 5.0,
-      taxNumber: 'GSTIN33AABCT9988D1Z9',
-      websiteUrl: 'https://royalspice.com',
-      facebookUrl: 'https://facebook.com/royalspice',
-      instagramUrl: 'https://instagram.com/royalspice',
-      twitterUrl: 'https://twitter.com/royalspice',
+      taxNumber: 'GSTIN33AAACJ1234F1Z5',
+      websiteUrl: 'https://maps.app.goo.gl/VubJq18cKDMrij7w5',
+      facebookUrl: 'https://www.justdial.com/Vellore/Jhonson-Food-Court-Jfc-Bagayam-Pennathur/9999PX416-X416-240319224157-K4W3_BZDET',
+      instagramUrl: 'https://instagram.com/johnsonfoodcourt_jfc',
+      twitterUrl: 'https://maps.app.goo.gl/VubJq18cKDMrij7w5',
+    },
+    create: {
+      id: 'default',
+      restaurantName: 'Johnson Food Court (JFC)',
+      tagLine: 'Multi-Cuisine Food Court & Open-Air Garden Dining',
+      logo: '/images/jfc-logo.svg',
+      address: 'Sherwood, Bagayam, Arni Road, Pennathur, Vellore, Tamil Nadu – 632011',
+      phone: '+91 99652 78872',
+      email: 'contact@johnsonfoodcourt.com',
+      openingHours: 'Mon - Sat: 10:30 AM - 11:30 PM | Sun: 12:30 PM - 11:30 PM',
+      currency: 'INR',
+      currencySymbol: '₹',
+      taxRate: 5.0,
+      taxNumber: 'GSTIN33AAACJ1234F1Z5',
+      websiteUrl: 'https://maps.app.goo.gl/VubJq18cKDMrij7w5',
+      facebookUrl: 'https://www.justdial.com/Vellore/Jhonson-Food-Court-Jfc-Bagayam-Pennathur/9999PX416-X416-240319224157-K4W3_BZDET',
+      instagramUrl: 'https://instagram.com/johnsonfoodcourt_jfc',
+      twitterUrl: 'https://maps.app.goo.gl/VubJq18cKDMrij7w5',
     },
   });
-  console.log('✓ Settings seeded');
+  console.log('✓ Settings seeded for Johnson Food Court (JFC)');
 
   console.log('--- Database Seeding Completed Successfully! ---');
 }
