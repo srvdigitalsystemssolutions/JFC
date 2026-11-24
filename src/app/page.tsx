@@ -65,7 +65,7 @@ export default async function CustomerHomePage() {
         {/* Background Overlay Art & Ambient Lighting */}
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#f2be54_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
         <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-orange-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -74,7 +74,7 @@ export default async function CustomerHomePage() {
               {/* Pre-Slogan Badge */}
               <div>
                 <div className="header-text-pre-slogan shadow-xl inline-flex items-center gap-2">
-                  <Flame className="w-4 h-4 text-orange-500" />
+                  <Flame className="w-4 h-4 text-red-500" />
                   <span>Welcome To <em>Johnson Food Court (JFC)</em></span>
                 </div>
               </div>
@@ -189,7 +189,7 @@ export default async function CustomerHomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-600 flex items-center justify-center font-bold text-lg">
+              <div className="w-10 h-10 rounded-xl bg-red-600/10 text-red-600 flex items-center justify-center font-bold text-lg">
                 🍗
               </div>
               <h4 className="font-ubuntu font-black text-sm text-slate-900">Live Shawarma &amp; BBQ</h4>
@@ -418,7 +418,7 @@ export default async function CustomerHomePage() {
               </div>
 
               <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 text-slate-950 font-black flex items-center justify-center text-xs">
+                <div className="w-9 h-9 rounded-full bg-red-600 text-white font-black flex items-center justify-center text-xs shadow-sm">
                   {t.customerName.charAt(0)}
                 </div>
                 <div>
@@ -462,9 +462,9 @@ export default async function CustomerHomePage() {
                 href="https://www.justdial.com/Vellore/Jhonson-Food-Court-Jfc-Bagayam-Pennathur/9999PX416-X416-240319224157-K4W3_BZDET"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-orange-300 font-bold text-xs rounded-lg border border-orange-500/30 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-red-300 font-bold text-xs rounded-lg border border-red-500/30 transition-colors"
               >
-                <Star className="w-3.5 h-3.5 fill-orange-400" />
+                <Star className="w-3.5 h-3.5 fill-red-400 text-red-400" />
                 <span>Justdial Reviews</span>
                 <ExternalLink className="w-3 h-3" />
               </a>

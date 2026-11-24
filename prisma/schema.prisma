@@ -204,21 +204,21 @@ model Message {
 
 model Setting {
   id             String   @id @default("default")
-  restaurantName String   @default("Royal Spice Grand Restaurant & Bar")
-  tagLine        String   @default("Authentic Flavours, Luxury Dining")
-  logo           String?
-  address        String   @default("42 Gourmet Avenue, Culinary District, Metro City")
-  phone          String   @default("+91 98765 43210")
-  email          String   @default("contact@royalspice.com")
-  openingHours   String   @default("Mon - Sun: 11:00 AM - 11:30 PM")
+  restaurantName String   @default("Johnson Food Court (JFC)")
+  tagLine        String   @default("Multi-Cuisine Food Court & Open-Air Garden Dining")
+  logo           String?  @default("/images/jfc-logo.svg")
+  address        String   @default("Sherwood, Bagayam, Arni Road, Pennathur, Vellore, Tamil Nadu – 632011")
+  phone          String   @default("+91 99652 78872")
+  email          String   @default("contact@johnsonfoodcourt.com")
+  openingHours   String   @default("Mon - Sat: 10:30 AM - 11:30 PM | Sun: 12:30 PM - 11:30 PM")
   currency       String   @default("INR")
   currencySymbol String   @default("₹")
   taxRate        Float    @default(5.0)
-  taxNumber      String   @default("GSTIN33AABCT9988D1Z9")
-  websiteUrl     String   @default("https://royalspice.com")
-  facebookUrl    String?  @default("https://facebook.com/royalspice")
-  instagramUrl   String?  @default("https://instagram.com/royalspice")
-  twitterUrl     String?  @default("https://twitter.com/royalspice")
+  taxNumber      String   @default("GSTIN33AAACJ1234F1Z5")
+  websiteUrl     String   @default("https://maps.app.goo.gl/VubJq18cKDMrij7w5")
+  facebookUrl    String?  @default("https://www.justdial.com/Vellore/Jhonson-Food-Court-Jfc-Bagayam-Pennathur/9999PX416-X416-240319224157-K4W3_BZDET")
+  instagramUrl   String?  @default("https://instagram.com/johnsonfoodcourt_jfc")
+  twitterUrl     String?  @default("https://maps.app.goo.gl/VubJq18cKDMrij7w5")
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }

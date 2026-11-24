@@ -50,9 +50,9 @@ export default function PublicFooter({ settings }: { settings?: any }) {
                 href="https://www.justdial.com/Vellore/Jhonson-Food-Court-Jfc-Bagayam-Pennathur/9999PX416-X416-240319224157-K4W3_BZDET"
                 target="_blank"
                 rel="noreferrer"
-                className="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-orange-500/40 text-orange-300 text-[11px] font-bold flex items-center gap-1.5 transition-colors"
+                className="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-red-500/40 text-red-300 text-[11px] font-bold flex items-center gap-1.5 transition-colors"
               >
-                <Star className="w-3.5 h-3.5 text-orange-400 fill-orange-400" />
+                <Star className="w-3.5 h-3.5 text-red-500 fill-red-500" />
                 <span>Justdial Verified</span>
                 <ExternalLink className="w-2.5 h-2.5 opacity-60" />
               </a>
@@ -61,7 +61,7 @@ export default function PublicFooter({ settings }: { settings?: any }) {
 
           {/* Col 2: Navigation Links */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold text-white uppercase tracking-wider text-orange-400 font-ubuntu">
+            <h3 className="text-xs font-bold text-amber-400 uppercase tracking-wider font-ubuntu">
               Food Court Navigation
             </h3>
             <ul className="space-y-2 text-xs">
@@ -105,32 +105,32 @@ export default function PublicFooter({ settings }: { settings?: any }) {
 
           {/* Col 3: Signature Specialties */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold text-white uppercase tracking-wider text-orange-400 font-ubuntu">
+            <h3 className="text-xs font-bold text-amber-400 uppercase tracking-wider font-ubuntu">
               Popular Specialties
             </h3>
             <ul className="space-y-2 text-xs text-slate-400">
               <li className="flex items-center gap-1.5">
-                <Flame className="w-3 h-3 text-orange-500 shrink-0" />
+                <Flame className="w-3 h-3 text-red-500 shrink-0" />
                 <span>JFC Special Rumali Shawarma</span>
               </li>
               <li className="flex items-center gap-1.5">
-                <Flame className="w-3 h-3 text-orange-500 shrink-0" />
+                <Flame className="w-3 h-3 text-red-500 shrink-0" />
                 <span>Crispy Honey Chilli Chicken</span>
               </li>
               <li className="flex items-center gap-1.5">
-                <Flame className="w-3 h-3 text-orange-500 shrink-0" />
+                <Flame className="w-3 h-3 text-red-500 shrink-0" />
                 <span>Charcoal Tandoori &amp; BBQ Chicken</span>
               </li>
               <li className="flex items-center gap-1.5">
-                <Flame className="w-3 h-3 text-orange-500 shrink-0" />
+                <Flame className="w-3 h-3 text-red-500 shrink-0" />
                 <span>Ambur Seeraga Samba Dum Biryani</span>
               </li>
               <li className="flex items-center gap-1.5">
-                <Flame className="w-3 h-3 text-orange-500 shrink-0" />
+                <Flame className="w-3 h-3 text-red-500 shrink-0" />
                 <span>Malabar Bun Parotta with Salna</span>
               </li>
               <li className="flex items-center gap-1.5">
-                <Flame className="w-3 h-3 text-orange-500 shrink-0" />
+                <Flame className="w-3 h-3 text-red-500 shrink-0" />
                 <span>Tender Coconut Falooda &amp; Shakes</span>
               </li>
             </ul>
@@ -138,7 +138,7 @@ export default function PublicFooter({ settings }: { settings?: any }) {
 
           {/* Col 4: Location & Contact */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold text-white uppercase tracking-wider text-orange-400 font-ubuntu">
+            <h3 className="text-xs font-bold text-amber-400 uppercase tracking-wider font-ubuntu">
               Location &amp; Timings
             </h3>
             <div className="space-y-3 text-xs text-slate-400">

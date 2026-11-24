@@ -63,19 +63,19 @@ export default function ReservationsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-between selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 flex flex-col justify-between selection:bg-red-600 selection:text-white">
       <PublicNavbar />
 
       <section className="bg-slate-950 text-white py-16 text-center border-b border-slate-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-8 space-y-4">
-          <span className="px-3 py-1 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-400 text-xs font-bold uppercase tracking-wider inline-block">
+          <span className="px-3 py-1 rounded-full bg-red-600/15 border border-red-500/30 text-amber-400 text-xs font-bold uppercase tracking-wider inline-block">
             Table Reservations
           </span>
           <h1 className="text-3xl sm:text-5xl font-black text-white">
             Book Your Table In Advance
           </h1>
           <p className="text-sm text-slate-400 max-w-xl mx-auto">
-            Reserve your preferred floor zone and let our culinary team prepare a personalized dining experience for your party.
+            Reserve your preferred dining zone at Johnson Food Court (JFC) in Pennathur, Vellore for open-air garden terrace or covered pavilion seating.
           </p>
         </div>
       </section>
@@ -101,7 +101,7 @@ export default function ReservationsPage() {
             <div className="pt-4 flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/menu"
-                className="px-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold shadow-md shadow-orange-500/20"
+                className="px-6 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-600/20"
               >
                 Browse Menu
               </Link>
@@ -131,7 +131,7 @@ export default function ReservationsPage() {
                     required
                     value={formData.date}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-orange-500"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-red-500"
                   />
                 </div>
 
@@ -140,7 +140,7 @@ export default function ReservationsPage() {
                   <select
                     value={formData.time}
                     onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-orange-500"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-red-500"
                   >
                     <option value="12:00">12:00 PM (Lunch)</option>
                     <option value="13:00">01:00 PM (Lunch)</option>
@@ -158,7 +158,7 @@ export default function ReservationsPage() {
                   <select
                     value={formData.guests}
                     onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-orange-500"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-red-500"
                   >
                     <option value="2">2 Guests (Couple Dining)</option>
                     <option value="4">4 Guests (Family Dining)</option>
@@ -175,7 +175,7 @@ export default function ReservationsPage() {
                   <select
                     value={formData.zone}
                     onChange={(e) => setFormData({ ...formData, zone: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-orange-500"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-red-500"
                   >
                     <option value="Main Dining">Main Dining Hall (Warm Chandelier)</option>
                     <option value="Terrace & Courtyard">Open Sky Rooftop & Courtyard</option>
@@ -191,7 +191,7 @@ export default function ReservationsPage() {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="e.g. Alexander Wright"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-orange-500"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-red-500"
                   />
                 </div>
               </div>
@@ -205,7 +205,7 @@ export default function ReservationsPage() {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="name@example.com"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-orange-500"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-red-500"
                   />
                 </div>
 
@@ -217,7 +217,7 @@ export default function ReservationsPage() {
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     placeholder="+91 98765 00000"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-orange-500"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-red-500"
                   />
                 </div>
               </div>
@@ -229,13 +229,13 @@ export default function ReservationsPage() {
                   value={formData.specialRequests}
                   onChange={(e) => setFormData({ ...formData, specialRequests: e.target.value })}
                   placeholder="Anniversary, birthday, high chair for infant, dietary allergies..."
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-orange-500"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-red-500"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black text-xs shadow-lg shadow-orange-500/25 transition-all flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-black text-xs shadow-lg shadow-red-600/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Calendar className="w-4 h-4" />
                 <span>Confirm Table Reservation</span>

@@ -4,7 +4,7 @@ import PublicFooter from '@/components/public/PublicFooter';
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-between selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 flex flex-col justify-between selection:bg-red-600 selection:text-white">
       <PublicNavbar />
       <main className="max-w-4xl mx-auto px-4 sm:px-8 py-16 flex-1 w-full space-y-6">
         <h1 className="text-3xl font-black text-slate-900">Privacy Policy</h1>
@@ -28,7 +28,7 @@ export default function PrivacyPolicyPage() {
 
           <h2 className="text-sm font-bold text-slate-900">4. Contact Us</h2>
           <p>
-            For questions or requests concerning your privacy data, please contact privacy@royalspice.com.
+            For questions or requests concerning your privacy data, please contact privacy@johnsonfoodcourt.com.
           </p>
         </div>
       </main>

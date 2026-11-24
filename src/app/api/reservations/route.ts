@@ -62,7 +62,7 @@ Special Requests: ${specialRequests || 'None'}`;
     await prisma.message.create({
       data: {
         name,
-        email: email || `${phone.replace(/\D/g, '')}@guest.royalspice.com`,
+        email: email || `${phone.replace(/\D/g, '')}@guest.johnsonfoodcourt.com`,
         phone,
         subject: `Table Reservation: ${guests} Guests on ${date} (${time})`,
         message: messageContent,

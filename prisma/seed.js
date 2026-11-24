@@ -692,49 +692,95 @@ async function main() {
   });
   console.log('✓ Sample Orders & Bills seeded');
 
-  // 8. Gallery for Johnson Food Court
+  // 8. Authentic Gallery for Johnson Food Court (from Google Maps & Justdial)
+  await prisma.gallery.deleteMany();
   const galleryItems = [
     {
-      title: 'JFC Open-Air Garden Dining & Evening Glow',
+      title: 'JFC Illuminated Neon Entrance Arch & Water Cascade',
       category: 'Ambience',
-      imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80',
-      description: 'Lively outdoor open-air seating with festive lights along Arni Road, Pennathur.',
+      imageUrl: '/images/gallery/jfc-entrance-neon.jpg',
+      description: 'Iconic illuminated 3D red neon JFC entrance with stone waterfall feature along Arni Road, Pennathur.',
       isFeatured: true,
       displayOrder: 1,
     },
     {
-      title: 'Live Charcoal BBQ & Shawarma Spit',
-      category: 'Food',
-      imageUrl: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80',
-      description: 'Fresh rotating chicken shawarma and smokey charcoal grills prepared live.',
+      title: 'Open-Air Scenic Garden Rooftop Terrace',
+      category: 'Ambience',
+      imageUrl: '/images/gallery/jfc-garden-terrace.jpg',
+      description: 'Elevated open-air dining terrace with pagoda shade canopies, wicker furniture, and Vellore mountain views.',
       isFeatured: true,
       displayOrder: 2,
     },
     {
-      title: 'Johnson Food Court Pavilion & Dine-In Area',
-      category: 'Interior',
-      imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80',
-      description: 'Spacious food court setting with fast-food counters, mocktails, and tandoori.',
+      title: 'Covered Garden Pavilion & Roadside Deck',
+      category: 'Ambience',
+      imageUrl: '/images/gallery/jfc-dining-pavilion.jpg',
+      description: 'Modern sheltered dining deck with artificial green turf flooring, sleek steel columns, and panoramic street vistas.',
       isFeatured: true,
       displayOrder: 3,
     },
     {
-      title: 'Sizzling Honey Chilli Chicken & Appetizers',
+      title: 'Crispy Honey Chilli Chicken Starter',
       category: 'Food',
-      imageUrl: 'https://images.unsplash.com/photo-1527477378379-fed450bbca74?auto=format&fit=crop&w=800&q=80',
-      description: 'JFC best-selling sweet and spicy crispy starters served fresh to diners.',
+      imageUrl: '/images/gallery/jfc-honey-chilli-chicken.jpg',
+      description: 'Authentic wok-tossed crispy chicken coated in sweet & spicy glaze, sesame seeds, and scallions.',
       isFeatured: true,
       displayOrder: 4,
+    },
+    {
+      title: 'Charcoal BBQ Mandi & Grilled Chicken Platter',
+      category: 'Food',
+      imageUrl: '/images/gallery/jfc-bbq-mandi-feast.jpg',
+      description: 'Smoky charcoal-barbecued whole spiced chicken served on a bed of long-grain mandi rice with garlic toum.',
+      isFeatured: true,
+      displayOrder: 5,
+    },
+    {
+      title: 'Wood-Fired Style Oven-Baked Pizza',
+      category: 'Food',
+      imageUrl: '/images/gallery/jfc-fresh-pizza.jpg',
+      description: 'Hand-stretched artisan pizza loaded with mozzarella cheese, roasted chicken cubes, and aromatic herbs.',
+      isFeatured: true,
+      displayOrder: 6,
+    },
+    {
+      title: 'Steamed Himalayan Chicken Dimsums & Momos',
+      category: 'Food',
+      imageUrl: '/images/gallery/jfc-steamed-momos.jpg',
+      description: 'Freshly steamed chicken momos served hot on terrace dining tables with spicy red pepper schezwan dip.',
+      isFeatured: true,
+      displayOrder: 7,
+    },
+    {
+      title: 'Official JFC Menu Card - BBQ, Tandoori & Sea Foods',
+      category: 'Menu Cards',
+      imageUrl: '/images/gallery/jfc-menu-bbq-grills.jpg',
+      description: 'Original physical restaurant menu spread showcasing full BBQ grills, shawarmas, fish manchurian, and chilli prawns.',
+      isFeatured: true,
+      displayOrder: 8,
+    },
+    {
+      title: 'Official JFC Menu Card - Chinese Wok & Starters',
+      category: 'Menu Cards',
+      imageUrl: '/images/gallery/jfc-menu-chinese-starters.jpg',
+      description: 'Authentic restaurant menu card featuring soups, fried rice varieties, hakka noodles, and tandoori kebabs.',
+      isFeatured: true,
+      displayOrder: 9,
+    },
+    {
+      title: 'Official JFC Menu Card - Juices, Faloodas & Desserts',
+      category: 'Menu Cards',
+      imageUrl: '/images/gallery/jfc-menu-juices-desserts.jpg',
+      description: 'Authentic beverage menu card detailing fresh fruit juices, specialty faloodas, thick shakes, and ice cream sundaes.',
+      isFeatured: true,
+      displayOrder: 10,
     },
   ];
 
   for (const g of galleryItems) {
-    const existing = await prisma.gallery.findFirst({ where: { title: g.title } });
-    if (!existing) {
-      await prisma.gallery.create({ data: g });
-    }
+    await prisma.gallery.create({ data: g });
   }
-  console.log('✓ Gallery seeded');
+  console.log('✓ Authentic JFC Gallery seeded (10 real photos)');
 
   // 9. Authentic Local Testimonials for JFC Vellore
   const testimonialsData = [

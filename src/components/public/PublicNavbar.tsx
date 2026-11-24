@@ -65,7 +65,7 @@ export default function PublicNavbar({ settings }: { settings?: any }) {
               href="https://www.justdial.com/Vellore/Jhonson-Food-Court-Jfc-Bagayam-Pennathur/9999PX416-X416-240319224157-K4W3_BZDET"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-orange-950/60 border border-orange-500/30 text-orange-300 font-bold hover:bg-orange-900/60 transition-colors"
+              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-red-950/60 border border-red-500/40 text-red-300 font-bold hover:bg-red-900/60 transition-colors"
             >
               <span>Justdial ★ 3.9</span>
             </a>
@@ -73,7 +73,7 @@ export default function PublicNavbar({ settings }: { settings?: any }) {
               href="https://maps.app.goo.gl/VubJq18cKDMrij7w5"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-950/60 border border-amber-500/30 text-amber-300 font-bold hover:bg-amber-900/60 transition-colors"
+              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-amber-950/60 border border-amber-500/40 text-amber-300 font-bold hover:bg-amber-900/60 transition-colors"
             >
               <span>Google Maps 📍</span>
             </a>
@@ -86,7 +86,7 @@ export default function PublicNavbar({ settings }: { settings?: any }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-8 h-20 flex items-center justify-between">
           {/* Logo & Brand */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-12 h-12 rounded-2xl bg-slate-950 border-2 border-amber-500/80 p-1 flex items-center justify-center shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform overflow-hidden">
+            <div className="w-12 h-12 rounded-2xl bg-slate-950 border-2 border-amber-500/80 p-1 flex items-center justify-center shadow-md shadow-red-600/20 group-hover:scale-105 transition-transform overflow-hidden">
               <img
                 src="/images/jfc-logo.svg"
                 alt="Johnson Food Court Logo"
@@ -98,12 +98,12 @@ export default function PublicNavbar({ settings }: { settings?: any }) {
                 <span className="font-extrabold text-lg sm:text-xl text-slate-900 tracking-tight block">
                   Johnson Food Court
                 </span>
-                <span className="px-1.5 py-0.5 rounded bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 text-[10px] font-black uppercase tracking-wider shadow-xs">
+                <span className="px-1.5 py-0.5 rounded bg-red-600 text-white text-[10px] font-black uppercase tracking-wider shadow-xs">
                   JFC
                 </span>
               </div>
               <p className="text-[10px] text-slate-500 font-semibold tracking-wider uppercase flex items-center gap-1">
-                <Flame className="w-3 h-3 text-orange-500" />
+                <Flame className="w-3 h-3 text-red-600" />
                 <span>Multi-Cuisine &bull; Open-Air Dining &bull; Vellore</span>
               </p>
             </div>
@@ -117,13 +117,13 @@ export default function PublicNavbar({ settings }: { settings?: any }) {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`font-ubuntu text-xs uppercase tracking-wider font-bold transition-all hover:text-amber-600 relative py-2 ${
-                    isActive ? 'text-amber-600 font-black' : 'text-slate-700'
+                  className={`font-ubuntu text-xs uppercase tracking-wider font-bold transition-all hover:text-red-600 relative py-2 ${
+                    isActive ? 'text-red-600 font-black' : 'text-slate-700'
                   }`}
                 >
                   {link.label}
                   {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-500 rounded-full" />
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-600 rounded-full" />
                   )}
                 </Link>
               );
@@ -134,14 +134,14 @@ export default function PublicNavbar({ settings }: { settings?: any }) {
           <div className="hidden sm:flex items-center gap-3">
             <Link
               href="/menu"
-              className="px-4 py-2.5 rounded-xl bg-orange-50 text-orange-600 hover:bg-orange-100 border border-orange-200 text-xs font-bold transition-all flex items-center gap-2"
+              className="px-4 py-2.5 rounded-xl bg-slate-900 text-amber-400 hover:bg-slate-800 border border-slate-800 text-xs font-bold transition-all flex items-center gap-2"
             >
-              <ShoppingBag className="w-4 h-4" />
+              <ShoppingBag className="w-4 h-4 text-amber-400" />
               <span>Explore Menu</span>
             </Link>
             <Link
               href="/reservations"
-              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-slate-950 text-xs font-black shadow-md shadow-orange-500/20 transition-all flex items-center gap-2"
+              className="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-black shadow-md shadow-red-600/30 transition-all flex items-center gap-2"
             >
               <Calendar className="w-4 h-4" />
               <span>Book Table</span>
@@ -152,7 +152,7 @@ export default function PublicNavbar({ settings }: { settings?: any }) {
           <div className="lg:hidden flex items-center gap-2">
             <Link
               href="/menu"
-              className="p-2 text-orange-600 bg-orange-50 rounded-xl border border-orange-200"
+              className="p-2 text-red-600 bg-red-50 rounded-xl border border-red-200"
             >
               <ShoppingBag className="w-5 h-5" />
             </Link>

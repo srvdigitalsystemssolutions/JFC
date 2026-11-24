@@ -4,7 +4,7 @@ import PublicFooter from '@/components/public/PublicFooter';
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-between selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 flex flex-col justify-between selection:bg-red-600 selection:text-white">
       <PublicNavbar />
       <main className="max-w-4xl mx-auto px-4 sm:px-8 py-16 flex-1 w-full space-y-6">
         <h1 className="text-3xl font-black text-slate-900">Terms & Conditions</h1>

@@ -262,8 +262,8 @@ export default function SettingsPage() {
                 type="url"
                 value={formData.websiteUrl || ''}
                 onChange={(e) => setFormData({ ...formData, websiteUrl: e.target.value })}
-                placeholder="https://royalspice.com"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+                placeholder="https://johnsonfoodcourt.com"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-500/20"
               />
             </div>
           </div>
@@ -287,8 +287,8 @@ export default function SettingsPage() {
                 type="url"
                 value={formData.instagramUrl || ''}
                 onChange={(e) => setFormData({ ...formData, instagramUrl: e.target.value })}
-                placeholder="https://instagram.com/royalspice"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+                placeholder="https://instagram.com/johnsonfoodcourt_jfc"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-500/20"
               />
             </div>
 
@@ -300,8 +300,8 @@ export default function SettingsPage() {
                 type="url"
                 value={formData.facebookUrl || ''}
                 onChange={(e) => setFormData({ ...formData, facebookUrl: e.target.value })}
-                placeholder="https://facebook.com/royalspice"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+                placeholder="https://facebook.com/johnsonfoodcourt"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-500/20"
               />
             </div>
 
@@ -313,8 +313,8 @@ export default function SettingsPage() {
                 type="url"
                 value={formData.twitterUrl || ''}
                 onChange={(e) => setFormData({ ...formData, twitterUrl: e.target.value })}
-                placeholder="https://twitter.com/royalspice"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+                placeholder="https://twitter.com/johnsonfoodcourt"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-500/20"
               />
             </div>
           </div>
